@@ -4,7 +4,7 @@ from django.db import models
 class User(models.Model):
     firstname = models.CharField(max_length=200)
     lastname = models.CharField(max_length=200)
-    kitaccount = models.CharField(max_length=200)
+    kitaccount = models.CharField(max_length=32) #funfact: old MS legacy :)
 
 class Hiwi(User):
     pass

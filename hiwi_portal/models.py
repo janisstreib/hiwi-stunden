@@ -12,7 +12,7 @@ class Hiwi(User):
 class Department(models.Model):
     name = models.CharField(max_length=200)
 
-class Carer(User):
+class Supervisor(User):
     department = models.ForeignKey(Department)
 
 class Contract(models.Model):
@@ -21,7 +21,7 @@ class Contract(models.Model):
         ('UF', 'Universitätsbereich'),
     )
     user =  models.ForeignKey(Hiwi)
-    carer = models.ForeignKey(Carer)
+    supervisor = models.ForeignKey(Supervisor)
     department = models.ForeignKey(Department)
     hours = models.IntegerField()
     payment = models.DecimalField(max_digits=6, decimal_places=2)

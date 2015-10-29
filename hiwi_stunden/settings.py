@@ -19,7 +19,7 @@ from django_auth_ldap.config import LDAPSearch, LDAPSearch
 LOGIN_URL = 'mysite_login'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
+AUTH_USER_MODEL = 'hiwi_portal.User'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -132,7 +132,7 @@ except configparser.NoOptionError as e:
 AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=unix,ou=IDM,dc=kit,dc=edu",
     ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
 AUTH_LDAP_START_TLS = False
-AUTH_LDAP_USER_ATTR_MAP = {"first_name": "givenName", "last_name": "sn"}
+AUTH_LDAP_USER_ATTR_MAP = {"firstname": "givenName", "lastname": "sn", "email":"mail"}
 logger = logging.getLogger('django_auth_ldap')
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)

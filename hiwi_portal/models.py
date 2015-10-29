@@ -1,11 +1,27 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.contrib.auth.models import UserManager
 
+#
 class User(models.Model):
     firstname = models.CharField(max_length=200)
     lastname = models.CharField(max_length=200)
-    kitaccount = models.CharField(max_length=32) #funfact: old MS legacy :)
+    kitaccount = models.CharField(max_length=32, unique=True) #funfact: old MS legacy :)
+    email = models.CharField(max_length=200)
+    is_active = models.BooleanField(default=True)
+    last_login = models.DateTimeField()
+    REQUIRED_FIELDS = ['firstname', 'lastname', 'email']
+    USERNAME_FIELD = 'kitaccount'
+    objects = UserManager()
 
+    def set_unusable_password():
+        pass;
+    def get_username(self):
+        return self.kitaccount
+    def is_authenticated(self):
+        return True
+    def set_password(self, pw):
+        pass;
 class Hiwi(User):
     pass
 

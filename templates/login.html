@@ -1,9 +1,9 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 
 {% block content %}
 
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+<div class="alert alert-danger" role="alert">Your username and password didn't match. Please try again.</div>
 {% endif %}
 
 {% if next %}

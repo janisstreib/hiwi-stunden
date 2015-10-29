@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
+import ldap
+import logging
+import configparser
+from django_auth_ldap.config import LDAPSearch, LDAPSearch
 LOGIN_URL = 'mysite_login'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,7 +41,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hiwi_portal'
+    'hiwi_portal',
+    'django_auth_ldap'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -53,7 +57,10 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'hiwi_stunden.urls'
-
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -107,3 +114,25 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 STATIC_URL = '/static/'
+
+AUTH_LDAP_BIND_DN = ""
+AUTH_LDAP_BIND_PASSWORD = ""
+AUTH_LDAP_SERVER_URI = ""
+config = configparser.ConfigParser()
+config.read("config.ini")
+try:
+    AUTH_LDAP_BIND_DN = config.get("ldap", "bind_dn")
+    AUTH_LDAP_BIND_PASSWORD = config.get("ldap", "bind_pw")
+    AUTH_LDAP_SERVER_URI = config.get("ldap", "server_uri")
+
+except configparser.NoOptionError as e:
+    print ("Missing configuartion! ", e)
+    exit(1)
+
+AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=unix,ou=IDM,dc=kit,dc=edu",
+    ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+AUTH_LDAP_START_TLS = False
+AUTH_LDAP_USER_ATTR_MAP = {"first_name": "givenName", "last_name": "sn"}
+logger = logging.getLogger('django_auth_ldap')
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.DEBUG)

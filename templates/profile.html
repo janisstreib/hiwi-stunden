@@ -4,5 +4,40 @@
 <div class="page-header">
 <h1>Your profile</h1>
 </div>
+<h2>Your data</h2>
+<form method="POST" action="/profile">
+<table class="table">
+  <tr>
+    <th>KIT-account</th>
+    <td><input class="form-control" id="kit-acc" type="text" value="{{user.kitaccount}}" disabled></td>
+  </tr>
+  <tr>
+    <th>Firstname</th>
+    <td><input class="form-control" id="fn" type="text" value="{{user.firstname}}" disabled></td>
+  </tr>
+  <tr>
+    <th>Surname</th>
+    <td><input class="form-control" id="sn" type="text" value="{{user.lastname}}" disabled></td>
+  </tr>
+  <tr>
+    <th>Password</th>
+    <td>Changable at the <a href="https://campus.studium.kit.edu/">Campus Management Portal</a>.</td>
+  </tr>
+  <tr>
+    <th>E-Mail</th>
+    <td><input class="form-control" id="kit-mail" type="text" value="{{user.email}}" disabled></td>
+  </tr>
+  <tr>
+    <th>Private E-Mail</th>
+    <td><input class="form-control" name="private_email" id="private-mail" type="text" value="{% if user.private_email %}{{user.private_email}}{% endif %}" ></td>
+  </tr>
+  <tr><td></td><td><input name="private_notif" type="checkbox"> Send notifications to my private E-Mail address specified above.</td></tr>
+  <tr>
+    <th>Phone number</th>
+    <td><input name="phone" class="form-control" id="phone" type="text" value="{% if user.phone_number %}{{user.phone_number}}{% endif %}" ></td>
+  </tr>
+  <tr><td></td><td><input type="submit" name="data" value="Save" class="btn btn-primary"/></td></tr>
+</table>
+</form>
 
 {% endblock %}

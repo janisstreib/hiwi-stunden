@@ -33,7 +33,11 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar">
           <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            <li class="right"><a href="/logout">Logout ({{ user.kitaccount }})</a></li>
+            {% else %}
             <li class="right"><a href="/login">Login</a></li>
+            {% endif %}
            </ul>
         </div><!--/.nav-collapse -->
       </div>

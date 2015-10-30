@@ -4,9 +4,21 @@
 <div class="page-header">
 <h1>Your profile</h1>
 </div>
+{% if error %}
+<div class="alert alert-danger" role="alert">
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 
+  <b>Error:</b>
+  <ul>
+    {% for e in error %}
+    <li>{{ e }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
 <h2>Your data</h2>
-<form method="POST" action="/profile">
+<form method="POST" action="/profile/">
 <table class="table">
+  {% csrf_token %}
   <tr>
     <th>KIT-account</th>
     <td><input class="form-control" id="kit-acc" type="text" value="{{user.kitaccount}}" disabled></td>

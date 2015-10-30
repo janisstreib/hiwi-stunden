@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 
 @login_required
 def index(request):
@@ -9,5 +10,15 @@ def index(request):
 
 @login_required
 def profile(request):
-    context = {"user":request.user}
+    user = request.user
+    context = {"user":user}
+    try:
+        if request.method == 'POST':
+            if not request.POST["data"] == None:
+                    user.phone_number = request.POST['phone']
+                    user.private_email = request.POST['private_email']
+                    user.clean_fields()
+                    user.save()
+    except ValidationError as v:
+        context['error'] = v.messages
     return render(request, 'profile.html', context)

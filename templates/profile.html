@@ -14,6 +14,11 @@
     {% endfor %}
   </ul>
 </div>
+{% elif post %}
+<div class="alert alert-success" role="alert">
+  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+  <b>Success!</b> Your data was saved successfully.
+</div>
 {% endif %}
 <h2>Your data</h2>
 <form method="POST" action="/profile/">

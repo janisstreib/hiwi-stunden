@@ -25,6 +25,7 @@ def profile(request):
                     else:
                         user.notify_to_private = False
                     user.save()
+            context['post'] = 'y'
     except ValidationError as v:
         context['error'] = v.messages
     return render(request, 'profile.html', context)

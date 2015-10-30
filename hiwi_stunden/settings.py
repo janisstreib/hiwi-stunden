@@ -20,7 +20,7 @@ LOGIN_URL = 'mysite_login'
 LOGIN_REDIRECT_URL = '/'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-AUTH_USER_MODEL = 'hiwi_portal.User'
+AUTH_USER_MODEL = 'hiwi_portal.Hiwi'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 

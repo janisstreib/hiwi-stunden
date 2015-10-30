@@ -10,14 +10,14 @@ class User(models.Model):
     email = models.CharField(max_length=200)
     private_email = models.CharField(max_length=200, null=True)
     is_active = models.BooleanField(default=True)
-    last_login = models.DateTimeField()
+    last_login = models.DateTimeField(null=True)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, null=True)
     REQUIRED_FIELDS = ['firstname', 'lastname', 'email']
     USERNAME_FIELD = 'kitaccount'
     objects = UserManager()
 
-    def set_unusable_password():
+    def set_unusable_password(self):
         pass;
     def get_username(self):
         return self.kitaccount

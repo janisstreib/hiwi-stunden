@@ -2,6 +2,9 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.contrib.auth.models
+import django.core.validators
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -35,7 +38,15 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('firstname', models.CharField(max_length=200)),
                 ('lastname', models.CharField(max_length=200)),
-                ('kitaccount', models.CharField(max_length=200)),
+                ('kitaccount', models.CharField(unique=True, max_length=32)),
+                ('email', models.CharField(max_length=200)),
+                ('private_email', models.CharField(max_length=200, null=True)),
+                ('is_active', models.BooleanField(default=True)),
+                ('last_login', models.DateTimeField()),
+                ('phone_number', models.CharField(blank=True, max_length=15, null=True, validators=[django.core.validators.RegexValidator(regex=b'^\\+?1?\\d{9,15}$', message=b"Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")])),
+            ],
+            managers=[
+                ('objects', django.contrib.auth.models.UserManager()),
             ],
         ),
         migrations.CreateModel(
@@ -59,17 +70,17 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Carer',
+            name='Hiwi',
             fields=[
                 ('user_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='hiwi_portal.User')),
-                ('department', models.ForeignKey(to='hiwi_portal.Department')),
             ],
             bases=('hiwi_portal.user',),
         ),
         migrations.CreateModel(
-            name='Hiwi',
+            name='Supervisor',
             fields=[
                 ('user_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='hiwi_portal.User')),
+                ('department', models.ForeignKey(to='hiwi_portal.Department')),
             ],
             bases=('hiwi_portal.user',),
         ),
@@ -80,12 +91,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='contract',
-            name='carer',
-            field=models.ForeignKey(to='hiwi_portal.Carer'),
+            name='user',
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='contract',
-            name='user',
-            field=models.ForeignKey(to='hiwi_portal.Hiwi'),
+            name='supervisor',
+            field=models.ForeignKey(to='hiwi_portal.Supervisor'),
         ),
     ]

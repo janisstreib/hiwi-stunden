@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hiwi_portal', '0003_auto_20151029_1605'),
+        ('hiwi_portal', '0001_initial'),
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='user',
-            name='is_active',
-            field=models.BooleanField(default=True),
+            name='last_login',
+            field=models.DateTimeField(null=True),
         ),
     ]

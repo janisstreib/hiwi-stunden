@@ -18,10 +18,10 @@
   <th>Personell department</th><td><select name="dp"><option>GF</option><option>UB</select></td>
 </tr>
 <tr>
-  <th>Contract start</th><td><input class="form-control" id="contract-start" name="contract-start" type="text" /></td>
+  <th>Contract start</th><td><input class="form-control datepicker" id="contract-start" name="contract-start" type="text" /></td>
 </tr>
 <tr>
-  <th>Contract end </th><td><input class="form-control" id="contract-end" name="contract-end" type="text"/></td>
+  <th>Contract end </th><td><input class="form-control datepicker" id="contract-end" name="contract-end" type="text"/></td>
 </tr>
 <tr>
   <th>Work hours</th><td><input class="form-control" id="work-hours" name="work-hours" type="text" /></td>
@@ -34,12 +34,4 @@
 </tr>
 </table>
 </form>
-<script>
-$(function() {
-$( "#contract-end" ).datepicker();
-$( "#contract-end" ).datepicker("option", "dateFormat", "yy-mm-dd");
-$( "#contract-start" ).datepicker();
-$( "#contract-start" ).datepicker("option", "dateFormat", "yy-mm-dd");
-});
-</script>
 {% endblock %}

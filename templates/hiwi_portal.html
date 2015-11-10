@@ -7,29 +7,24 @@
 <div class="panel panel-default">
   <!-- Default panel contents -->
   <div class="panel-heading">Work hours</div>
-
+{% include "errorhandle.html" %}
   <!-- Table -->
+  <form method="POST" action="/">
+  {% csrf_token %}
   <table class="table">
     <tr>
       <th>Activity (keyword, project)</th><th>Date</th><th>Start</th><th>End</th><th>Pause</th><th>Worktime</th><th></th>
     </tr>
     <tr>
       <td><input class="form-control" type="text"/></td>
-      <td><input class="form-control" type="text" id="datepicker"></td>
-      <td><input class="form-control" type="text" id="startpicker"></td>
-      <td><input class="form-control" type="text" id="endpicker"></td>
+      <td><input class="form-control datepicker" type="text" id="datepicker"></td>
+      <td><input class="form-control timepicker" type="text" id="startpicker"></td>
+      <td><input class="form-control timepicker" type="text" id="endpicker"></td>
       <td><input class="form-control" type="text"/></td>
       <td><input class="form-control" type="text"/></td>
-      <td><input class="btn btn-primary" value="OK" type="submit"/></td>
+      <td><input class="btn btn-primary" name="" value="OK" type="submit"/></td>
     </tr>
   </table>
-  <script>
-$(function() {
-  $( "#datepicker" ).datepicker();
-  $( "#datepicker" ).datepicker("option", "dateFormat", "yy-mm-dd");
-$( "#startpicker" ).timepicker();
-$( "#endpicker" ).timepicker();
-});
-</script>
+</form>
 </div
 {% endblock %}

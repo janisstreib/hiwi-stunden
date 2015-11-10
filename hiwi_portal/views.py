@@ -1,12 +1,62 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from models import Contract
+from models import Contract, WorkLog, WorkTime
 from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import redirect
 
 @login_required
 def index(request):
-    context = {"user":request.user}
+    user = request.user
+    context = {"user":user}
+    contracts = user.contract_set.all()
+    now = datetime.now()
+    month = now.month
+    year = now.year
+    ctracs = []
+    for c in contracts:
+        try:
+            workL = WorkLog.objects.get(contract=c, month=month, year=year)
+        except ObjectDoesNotExist:
+            workL = WorkLog()
+            workL.month = month
+            workL.year = year
+            workL.contract = c
+            workL.save()
+        c.cw=workL
+
+        ctracs.append(c)
+    context['contracts'] = ctracs
+    print(contracts)
+    if request.method == 'POST':
+        try:
+            contract = Contract.objects.get(id=request.POST["contract-id"])
+            wLog = WorkLog.objects.get(contract=c, month=month, year=year)
+            wt = WorkTime()
+            wt.work_log = wLog
+            wt.activity = request.POST['activity']
+            wt.hours = request.POST['work']
+            wt.pause = request.POST['pause']
+            date = request.POST['date']
+            end = request.POST['end']
+            start = request.POST['start']
+            start = datetime.strptime(start, "%H:%M")
+            end = datetime.strptime(end, "%H:%M")
+            date = datetime.strptime(date, "%Y-%m-%d")
+            wt.end = end
+            wt.begin = start
+            wt.date = date
+            wt.clean_fields()
+            wt.save()
+        except ObjectDoesNotExist as v:
+            context['error'] = [v.message]
+        except ValueError as v:
+            context['error'] = [v.message]
+        except ValidationError as v:
+            context['error'] = v.messages
+        context['post'] = 'y'
+
     return render(request, 'hiwi_portal.html', context)
 
 

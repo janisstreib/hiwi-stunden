@@ -50,14 +50,22 @@ class Contract(models.Model):
     contract_begin = models.DateField('Vertragsstart')
     contract_end = models.DateField('Vertragsende')
 
+    @property
+    def current_worklog(self):
+        return self.cw
+
 class WorkLog(models.Model):
     contract = models.ForeignKey(Contract)
-    printed = models.BooleanField()
-    carer_signed = models.BooleanField()
+    printed = models.BooleanField(default=False)
+    carer_signed = models.BooleanField(default=False)
+    month = models.IntegerField()
+    year = models.IntegerField()
 
 class WorkTime(models.Model):
     work_log =  models.ForeignKey(WorkLog)
     hours = models.IntegerField()
     pause = models.IntegerField()
-    begin = models.DateTimeField('Start')
-    end = models.DateTimeField('Ende')
+    begin = models.TimeField('Start')
+    end = models.TimeField('Ende')
+    date = models.DateField()
+    activity = models.CharField(max_length=200)

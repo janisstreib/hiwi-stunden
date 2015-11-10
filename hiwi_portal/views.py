@@ -93,6 +93,7 @@ def contractAdd(request):
     context = {"user":user}
     try:
         if request.method == 'POST':
+            context['post'] = 'y'
             contract = Contract()
             contract.department = request.POST['institute']
             contract.user = user
@@ -109,7 +110,7 @@ def contractAdd(request):
             contract.clean_fields()
             contract.save()
             redirect("/profile")
-        context['post'] = 'y'
+
     except ValidationError as v:
         context['error'] = v.messages
         print(v)

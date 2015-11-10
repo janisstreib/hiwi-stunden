@@ -1,5 +1,6 @@
 .container {
   margin-top: 65px;
+  margin-bottom: 30px;
 }
 .quest {
   font-weight: bold;
@@ -7,4 +8,7 @@
 .quest:after {
   content:"\A";
   white-space:pre;
+}
+.subtext {
+  color: #c0c0c0;
 }

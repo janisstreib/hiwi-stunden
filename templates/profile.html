@@ -41,6 +41,7 @@
   <tr><td></td><td><input type="submit" name="data" value="Save" class="btn btn-primary pull-right"/></td></tr>
 </table>
 </form>
+
 <h2>Your work settings</h2>
 <div class="panel panel-default">
   <div class="panel-heading">Your contracts</div>
@@ -59,5 +60,12 @@
     {% endfor %}
   </table>
 </div>
-
+<h1>Danger zone</h1>
+<h2>Erase all data</h2>
+<p>Hereby, all your work hours, contracts, your private mail and phone number stored on this site will be
+instantaneously erased.</p>
+<form action="/profile/delete" method="POST">
+{% csrf_token %}
+<input type="submit" class="btn btn-danger" href="/profile/delete" value="Erase all account data"/>
+</form>
 {% endblock %}

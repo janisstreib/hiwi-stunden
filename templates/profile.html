@@ -50,11 +50,11 @@
   </div>
   <table class="table">
     <tr>
-      <th>Institute</th><th>Personell id</th><th>Personell department</th><th>Contract start</th><th>Contract end</th><th>Work hours</th><th></th>
+      <th>Institute</th><th>Personell id</th><th>Personell department</th><th>Contract start</th><th>Contract end</th><th>Work hours</th><th>Payment/hour</th><th></th>
     </tr>
     {% for c in user.contract_set.all %}
       <tr>
-        <td>{{c.department}}</td><td>{{c.personell_number}}</td><td>{{c.personell}}</td><td>{{c.contract_begin}}</td><td>{{c.contract_end}}</td><td>{{c.hours}}</td><td></td>
+        <td>{{c.department}}</td><td>{{c.personell_number}}</td><td>{{c.personell}}</td><td>{{c.contract_begin}}</td><td>{{c.contract_end}}</td><td>{{c.hours}}</td><td>{{c.payment}} €</td><td></td>
       </tr>
     {% endfor %}
   </table>

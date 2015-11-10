@@ -14,6 +14,8 @@ def index(request):
     now = datetime.now()
     month = now.month
     year = now.year
+    context['year'] = year
+    context['month'] = month
     ctracs = []
     for c in contracts:
         try:
@@ -82,6 +84,8 @@ def profile(request):
         context['error'] = v.messages
     return render(request, 'profile.html', context)
 
+def faq(request):
+    return render(request, 'faq.html', {})
 
 @login_required
 def contractAdd(request):

@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^profile/contract/add/$', views.contractAdd, name='contractAdd'),
     url(r'^profile/$', views.profile, name='profile'),
     url(r'^$', views.index, name='index'),
+    url(r'^faq/$', views.faq, name='faq'),
 ]

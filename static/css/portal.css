@@ -1,3 +1,10 @@
 .container {
   margin-top: 65px;
 }
+.quest {
+  font-weight: bold;
+}
+.quest:after {
+  content:"\A";
+  white-space:pre;
+}

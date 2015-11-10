@@ -39,11 +39,11 @@ class Supervisor(User):
 class Contract(models.Model):
     PERSONELL_DEPARTMENTS = (
         ('GF', 'Großforschungsbereich'),
-        ('UF', 'Universitätsbereich'),
+        ('UB', 'Universitätsbereich'),
     )
     user =  models.ForeignKey(Hiwi)
     supervisor = models.ForeignKey(Supervisor)
-    department = models.ForeignKey(Department)
+    department = models.CharField(max_length=200)
     hours = models.IntegerField()
     payment = models.DecimalField(max_digits=6, decimal_places=2)
     personell = models.CharField(max_length=2, choices=PERSONELL_DEPARTMENTS)

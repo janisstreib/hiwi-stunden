@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h1>Add contract</h1>
+{% include "errorhandle.html" %}
+<form method="POST" action="/profile/contract/add/">
+{% csrf_token %}
+<table class="table">
+<tr>
+  <th>Institute</th><td><input class="form-control" id="institute" name="institute" type="text" /></td>
+</tr>
+<tr>
+  <th>Personell id</th><td><input class="form-control" id="personell-id" name="personell-id" type="text" /></td>
+</tr>
+<tr>
+  <th>Personell department</th><td><select name="dp"><option>GF</option><option>UB</select></td>
+</tr>
+<tr>
+  <th>Contract start</th><td><input class="form-control" id="contract-start" name="contract-start" type="text" /></td>
+</tr>
+<tr>
+  <th>Contract end </th><td><input class="form-control" id="contract-end" name="contract-end" type="text"/></td>
+</tr>
+<tr>
+  <th>Work hours</th><td><input class="form-control" id="work-hours" name="work-hours" type="text" /></td>
+</tr>
+<tr>
+  <th>Payment</th><td><input class="form-control" id="payment" name="payment" type="text" /></td>
+</tr>
+<tr>
+  <th></th><td><input type="submit" class="pull-right btn btn-primary" value="Add"/></td>
+</tr>
+</table>
+</form>
+<script>
+$(function() {
+$( "#contract-end" ).datepicker();
+$( "#contract-end" ).datepicker("option", "dateFormat", "yy-mm-dd");
+$( "#contract-start" ).datepicker();
+$( "#contract-start" ).datepicker("option", "dateFormat", "yy-mm-dd");
+});
+</script>
+{% endblock %}

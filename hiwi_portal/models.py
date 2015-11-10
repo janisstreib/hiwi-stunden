@@ -42,7 +42,6 @@ class Contract(models.Model):
         ('UB', 'Universitätsbereich'),
     )
     user =  models.ForeignKey(Hiwi)
-    supervisor = models.ForeignKey(Supervisor)
     department = models.CharField(max_length=200)
     hours = models.IntegerField()
     payment = models.DecimalField(max_digits=6, decimal_places=2)

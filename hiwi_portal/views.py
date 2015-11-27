@@ -1,10 +1,15 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from models import Contract, WorkLog, WorkTime
 from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
+import tempfile
+import shutil
+from subprocess import Popen
 
 @login_required
 def index(request):
@@ -117,3 +122,48 @@ def contractAdd(request):
     except ValueError as v:
         context['error'] = [v.message]
     return render(request, 'contract_add.html', context)
+
+@login_required
+def printView(request):
+    user = request.user
+    pathComp = request.path_info.split("/")
+    contract = Contract.objects.get(id=int(pathComp[2]), user=user)
+    workL = WorkLog.objects.get(month=int(pathComp[3]),year=int(pathComp[4]), contract=contract)
+    print(contract)
+    response = HttpResponse(content_type='application/pdf')
+
+    out = tempfile.mkdtemp()
+    templ = open("milog-form/milog_form_placehold.tex", "r")
+    templEnd = open(out+'/h.tex', "w+")
+    templR = templ.read().decode("utf-8")
+    templ.close()
+    templR = templR.replace("{!name}", user.lastname +", "+user.firstname)
+    templR = templR.replace("{!personell_number}", str(contract.personell_number))
+    if(contract.personell == "UB"):
+        templR = templR.replace("{!gf}", "")
+        templR = templR.replace("{!ub}", "checked,")
+    else:
+        templR = templR.replace("{!gf}", "checked,")
+        templR = templR.replace("{!ub}", "")
+    templR = templR.replace("{!contract_hours}", str(contract.hours))
+    templR = templR.replace("{!contract_pay}", str(contract.payment))
+    templR = templR.replace("{!my}", pathComp[3]+"/"+pathComp[4])
+    rows = ""
+    endSum = 0
+    for t in  workL.worktime_set.all():
+        rows += "%s & %s & %s & %s & %s & %d\\\\ \hline\n" % (t.activity, t.date.strftime("%d.%m.%y") , t.begin, t.end, "", t.hours)
+        endSum += t.hours
+    templR = templR.replace("{!rows}", rows)
+    templR = templR.replace("{!sum}", str(endSum))
+    templEnd.write(templR.encode("utf-8"))
+    templEnd.close()
+    p = Popen(['pdflatex', '-output-directory='+out, out+'/h.tex', '-interaction nonstopmode', '-halt-on-error', '-file-line-error'], cwd='milog-form/')
+    p.wait()
+    f = open(out+'/h.pdf', 'r')
+    response.write(f.read())
+    f.close()
+    #out.close()
+    # It's usually a good idea to set the 'Content-Length' header too.
+    # You can also set any other required headers: Cache-Control, etc.
+    shutil.rmtree(out)
+    return response

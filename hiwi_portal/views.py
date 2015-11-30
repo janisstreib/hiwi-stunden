@@ -23,21 +23,6 @@ def index(request):
     year = now.year
     context['year'] = year
     context['month'] = month
-    ctracs = []
-    for c in contracts:
-        try:
-            workL = WorkLog.objects.get(contract=c, month=month, year=year)
-        except ObjectDoesNotExist:
-            workL = WorkLog()
-            workL.month = month
-            workL.year = year
-            workL.contract = c
-            workL.save()
-        c.cw=workL
-
-        ctracs.append(c)
-    context['contracts'] = ctracs
-    print(contracts)
     if request.method == 'POST':
         try:
             contract = Contract.objects.get(id=request.POST["contract-id"])
@@ -57,7 +42,7 @@ def index(request):
             if startStamp >= endStamp:
                 raise ValidationError("The start time have to be before the end time.")
             if (int(wt.pause)*60*60) >= endStamp-startStamp:
-                raise ValidationError("Such error, many pause! "+str(endStamp-startStamp) + "vs"+str(wt.pause*60*60))
+                raise ValidationError("Such error, many pause! ")
             wt.hours = round(((endStamp-startStamp)-int(wt.pause)*60*60)/60/60)
             if(wt.hours == 0):
                 raise ValidationError("Worktime caped to 0.")
@@ -74,7 +59,24 @@ def index(request):
         except ValidationError as v:
             context['error'] = v.messages
         context['post'] = 'y'
-
+    ctracs = []
+    for c in contracts:
+        workSum = 0
+        try:
+            workL = WorkLog.objects.get(contract=c, month=month, year=year)
+            logs = workL.worktime_set.all()
+            for l in logs:
+                workSum += l.hours
+        except ObjectDoesNotExist:
+            workL = WorkLog()
+            workL.month = month
+            workL.year = year
+            workL.contract = c
+            workL.save()
+        c.cw=workL
+        c.cSum = workSum
+        ctracs.append(c)
+    context['contracts'] = ctracs
     return render(request, 'hiwi_portal.html', context)
 
 

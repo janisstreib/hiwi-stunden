@@ -39,7 +39,7 @@ def index(request):
     if request.method == 'POST':
         try:
             contract = Contract.objects.get(id=request.POST["contract-id"])
-            wLog = WorkLog.objects.get(contract=c, month=month, year=year)
+            wLog = WorkLog.objects.get(contract=contract, month=month, year=year)
             wt = WorkTime()
             wt.work_log = wLog
             wt.activity = request.POST['activity']
@@ -155,7 +155,7 @@ def printView(request):
             t.date.strftime("%d.%m.%y") ,
             t.begin.strftime("%H:%M"),
             t.end.strftime("%H:%M"),
-            "", 
+            "",
             t.hours)
         endSum += t.hours
     templR = templR.replace("{!rows}", rows)

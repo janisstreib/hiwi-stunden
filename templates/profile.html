@@ -50,7 +50,7 @@
   </div>
   <table class="table">
     <tr>
-      <th>Institute</th><th>Personell id</th><th>Personell department</th><th>Contract start</th><th>Contract end</th><th>Work hours</th><th>Payment/hour</th><th>Vacation (per year) in h</th><th><a href="contract/add" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></th>
+      <th>Institute</th><th>Personell id</th><th>Personell department</th><th>Contract start</th><th>Contract end</th><th>Work hours</th><th>Payment/hour</th><th>Vacation hours/year</th><th><a href="contract/add" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></th>
     </tr>
     {% for c in user.contract_set.all %}
       <tr>

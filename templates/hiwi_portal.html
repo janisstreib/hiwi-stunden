@@ -20,6 +20,7 @@
     {% for w in c.current_worklog.worktime_set.all  %}
     <tr>
       <td>{{w.activity}}</td><td>{{w.date|date:"d.m.y"}}</td><td>{{w.begin|time:"H:i"}}</td><td>{{w.end|time:"H:i"}}</td><td>{{w.pause}}</td><td>{{w.hours}}</td>
+      <td></td>
     </tr>
     {% endfor %}
     <tr>
@@ -28,7 +29,7 @@
       <td><input class="form-control timepicker" type="text" name="start"></td>
       <td><input class="form-control timepicker" type="text" name="end"></td>
       <td><input class="form-control" type="text" name="pause"/></td>
-      <td><input class="form-control" type="text" name="work"/></td>
+      <td></td>
       <td><input class="btn btn-primary" value="OK" type="submit"/></td>
     </tr>
     <tr>

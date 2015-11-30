@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 import tempfile
 import shutil
+import time
 from subprocess import Popen
 
 @login_required
@@ -43,13 +44,22 @@ def index(request):
             wt = WorkTime()
             wt.work_log = wLog
             wt.activity = request.POST['activity']
-            wt.hours = request.POST['work']
+            #wt.hours = request.POST['work']
             wt.pause = request.POST['pause']
             date = request.POST['date']
             end = request.POST['end']
             start = request.POST['start']
             start = datetime.strptime(start, "%H:%M")
             end = datetime.strptime(end, "%H:%M")
+            startStamp = time.mktime(start.timetuple())
+            endStamp = time.mktime(end.timetuple())
+            if startStamp >= endStamp:
+                raise ValidationError("The start time have to be before the end time.")
+            if (int(wt.pause)*60*60) >= endStamp-startStamp:
+                raise ValidationError("Such error, many pause! "+str(endStamp-startStamp) + "vs"+str(wt.pause*60*60))
+            wt.hours = round(((endStamp-startStamp)-int(wt.pause)*60*60)/60/60)
+            if(wt.hours == 0):
+                raise ValidationError("Worktime caped to 0.")
             date = datetime.strptime(date, "%Y-%m-%d")
             wt.end = end
             wt.begin = start

@@ -67,6 +67,7 @@ $(function() {
   $( ".datepicker" ).each(function( index ) {
     $( this ).datepicker();
     $( this ).datepicker("option", "dateFormat", "yy-mm-dd");
+     $('[data-toggle="tooltip"]').tooltip();
 });
 $( ".timepicker" ).each(function( index ) {
   $( this ).timepicker();

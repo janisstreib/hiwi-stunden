@@ -83,6 +83,8 @@ def index(request):
             workL.save()
         c.cw=workL
         c.cSum = workSum
+        if c.hours-workSum < 6:
+            c.critSum = True
         ctracs.append(c)
     context['contracts'] = ctracs
     return render(request, 'hiwi_portal.html', context)

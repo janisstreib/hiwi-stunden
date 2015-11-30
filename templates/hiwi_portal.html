@@ -31,7 +31,7 @@
       <td><input class="form-control timepicker" type="text" name="end"></td>
       <td><input class="form-control" type="text" name="pause"/></td>
       <td></td>
-      <td><input class="btn btn-primary" value="OK" type="submit"/></td>
+      <td><input class="btn btn-primary {% ifequal c.cSum c.hours%}disabled{%endifequal%}" {% ifequal c.cSum c.hours%}onclick="return false"{%endifequal%} value="OK" type="submit"/></td>
     </tr>
     <tr>
       <td></td>
@@ -39,7 +39,7 @@
       <td></td>
       <td></td>
       <td></td>
-      <td><strong>&Sigma; {{c.cSum}}</strong></td>
+      <td><strong>&Sigma; {{c.cSum}} {% if c.critSum %}<span data-toggle="tooltip" data-placement="bottom" title="{% ifequal c.cSum c.hours%}Your working time for this month reached its limit of {{c.hours}} hours.{%else%}You are near your monthly limit of {{c.hours}} hours.{%endifequal%}" class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true"></span>{% endif %}</strong></td>
       <td><a href="contract/{{c.id}}/{{month}}/{{year}}/print" class="btn btn-success"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print</a></td>
     </tr>
   </table>

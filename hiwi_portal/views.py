@@ -13,6 +13,14 @@ import time
 from django.contrib.auth import logout
 from subprocess import Popen
 
+#TODO: In ordentlich im model
+def calcHours(worklog):
+    workSum = 0
+    logs = worklog.worktime_set.all()
+    for l in logs:
+        workSum += l.hours
+    return workSum
+
 @login_required
 def index(request):
     user = request.user
@@ -46,6 +54,8 @@ def index(request):
             wt.hours = round(((endStamp-startStamp)-int(wt.pause)*60*60)/60/60)
             if(wt.hours == 0):
                 raise ValidationError("Worktime caped to 0.")
+            if calcHours(wLog)+wt.hours > contract.hours:
+                raise ValidationError("Max. monthly worktime exceeded!")
             date = datetime.strptime(date, "%Y-%m-%d")
             wt.end = end
             wt.begin = start
@@ -64,9 +74,7 @@ def index(request):
         workSum = 0
         try:
             workL = WorkLog.objects.get(contract=c, month=month, year=year)
-            logs = workL.worktime_set.all()
-            for l in logs:
-                workSum += l.hours
+            workSum = calcHours(workL)
         except ObjectDoesNotExist:
             workL = WorkLog()
             workL.month = month

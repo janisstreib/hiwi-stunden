@@ -81,6 +81,11 @@ def index(request):
             context['post'] = 'y'
     ctracs = []
     for c in contracts:
+        if c.contract_begin.year > year or \
+        c.contract_end.year < year or \
+        (month < c.contract_begin.month and year <= c.contract_begin.year) or \
+        (month > c.contract_end.month and year >= c.contract_begin.year):
+            continue
         workSum = 0
         try:
             workL = WorkLog.objects.get(contract=c, month=month, year=year)
@@ -97,6 +102,10 @@ def index(request):
             c.critSum = True
         ctracs.append(c)
     context['contracts'] = ctracs
+    years = []
+    for i in range(-2, 3):
+        years.append(datetime.now().year+i)
+    context['years'] = years
     return render(request, 'hiwi_portal.html', context)
 
 

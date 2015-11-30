@@ -10,6 +10,7 @@ from django.shortcuts import redirect
 import tempfile
 import shutil
 import time
+from django.contrib.auth import logout
 from subprocess import Popen
 
 @login_required
@@ -124,7 +125,7 @@ def contractAdd(request):
             contract.payment = request.POST['payment']
             contract.clean_fields()
             contract.save()
-            redirect("/profile")
+            return redirect("/profile")
 
     except ValidationError as v:
         context['error'] = v.messages
@@ -182,3 +183,12 @@ def printView(request):
     # You can also set any other required headers: Cache-Control, etc.
     shutil.rmtree(out)
     return response
+
+@login_required
+def delete_profile(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()
+        return redirect("/")
+    return redirect("/profile")

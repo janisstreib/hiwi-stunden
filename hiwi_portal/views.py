@@ -151,7 +151,12 @@ def printView(request):
     rows = ""
     endSum = 0
     for t in  workL.worktime_set.all():
-        rows += "%s & %s & %s & %s & %s & %d\\\\ \hline\n" % (t.activity, t.date.strftime("%d.%m.%y") , t.begin, t.end, "", t.hours)
+        rows += "%s & %s & %s & %s & %s & %d\\\\ \hline\n" % (t.activity,
+            t.date.strftime("%d.%m.%y") ,
+            t.begin.strftime("%H:%M"),
+            t.end.strftime("%H:%M"),
+            "", 
+            t.hours)
         endSum += t.hours
     templR = templR.replace("{!rows}", rows)
     templR = templR.replace("{!sum}", str(endSum))

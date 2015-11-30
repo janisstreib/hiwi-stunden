@@ -49,6 +49,7 @@ class Contract(models.Model):
     personell_number = models.IntegerField()
     contract_begin = models.DateField('Vertragsstart')
     contract_end = models.DateField('Vertragsende')
+    vacation = models.PositiveIntegerField()
 
     @property
     def current_worklog(self):
@@ -64,7 +65,7 @@ class WorkLog(models.Model):
 class WorkTime(models.Model):
     work_log =  models.ForeignKey(WorkLog)
     hours = models.IntegerField()
-    pause = models.IntegerField()
+    pause = models.PositiveIntegerField()
     begin = models.TimeField('Start')
     end = models.TimeField('Ende')
     date = models.DateField()

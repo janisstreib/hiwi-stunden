@@ -50,7 +50,7 @@ def index(request):
             if startStamp >= endStamp:
                 raise ValidationError("The start time have to be before the end time.")
             if (int(wt.pause)*60*60) >= endStamp-startStamp:
-                raise ValidationError("Such error, many pause! ")
+                raise ValidationError("Such error, many pause!")
             wt.hours = round(((endStamp-startStamp)-int(wt.pause)*60*60)/60/60)
             if(wt.hours == 0):
                 raise ValidationError("Worktime caped to 0.")
@@ -135,6 +135,7 @@ def contractAdd(request):
             contract.personell = request.POST['dp']
             contract.hours = request.POST['work-hours']
             contract.payment = request.POST['payment']
+            contract.vacation = round((int(contract.hours) *20*3.95)/85.0)
             contract.clean_fields()
             contract.save()
             return redirect("/profile")

@@ -188,7 +188,6 @@ def printView(request):
 def delete_profile(request):
     if request.method == 'POST':
         user = request.user
-        logout(request)
         user.delete()
-        return redirect("/")
+        return redirect("/logout")
     return redirect("/profile")

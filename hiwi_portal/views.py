@@ -41,7 +41,7 @@ def index(request):
             year = int(request.POST['year'])
             context['year'] = year
             context['month'] = month
-        else :
+        if request.POST.get("contract-id"):
             try:
                 contract = Contract.objects.get(id=request.POST["contract-id"])
                 wLog = WorkLog.objects.get(contract=contract, month=month, year=year)
@@ -83,9 +83,10 @@ def index(request):
     for c in contracts:
         if c.contract_begin.year > year or \
         c.contract_end.year < year or \
-        (month < c.contract_begin.month and year <= c.contract_begin.year) or \
-        (month > c.contract_end.month and year >= c.contract_begin.year):
+        (c.contract_begin.year == year and c.contract_begin.month > month) or \
+        (c.contract_end.year == year and c.contract_end.month < month):
             continue
+        
         workSum = 0
         try:
             workL = WorkLog.objects.get(contract=c, month=month, year=year)

@@ -34,6 +34,8 @@
 
   <form method="POST" action="/">
   {% csrf_token %}
+  <input type="hidden" name="month" value="{{month}}"/>
+  <input type="hidden" name="year" value="{{year}}"/>
   <table class="table">
     <tr>
       <th>Activity (keyword, project)</th><th>Date</th><th>Start</th><th>End</th><th>Pause</th><th>Worktime</th><th></th>

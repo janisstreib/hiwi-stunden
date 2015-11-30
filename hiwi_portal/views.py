@@ -165,7 +165,7 @@ def printView(request):
             t.date.strftime("%d.%m.%y") ,
             t.begin.strftime("%H:%M"),
             t.end.strftime("%H:%M"),
-            "",
+            str(t.pause)+":00",
             t.hours)
         endSum += t.hours
     templR = templR.replace("{!rows}", rows)

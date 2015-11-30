@@ -33,6 +33,10 @@ def index(request):
     context['month'] = month
     if request.method == 'POST':
         if request.POST.get('month') and request.POST.get('year'):
+            if int(request.POST['month']) > 12 or int(request.POST['month']) < 1:
+                raise ValidationError("Invalid month.")
+            if int(request.POST['year']) > year+2 or int(request.POST['year']) < year-2:
+                raise ValidationError("Invalid year.")
             month = int(request.POST['month'])
             year = int(request.POST['year'])
             context['year'] = year

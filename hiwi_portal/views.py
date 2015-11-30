@@ -219,3 +219,9 @@ def delete_profile(request):
         user.delete()
         return redirect("/logout")
     return redirect("/profile")
+
+@login_required
+def delete_contract(request):
+    contr = Contract(user=request.user, id=int(request.path_info.split("/")[3]))
+    contr.delete()
+    return redirect("/profile/")

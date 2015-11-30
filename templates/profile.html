@@ -47,15 +47,14 @@
   <div class="panel-heading">Your contracts</div>
   <div class="panel-body">
     <p>Add and manage your hiwi contracts with the KIT below. Enter them as they should appear on the monthly document.</p>
-    <span class="pull-right"><a href="contract/add" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></span>
   </div>
   <table class="table">
     <tr>
-      <th>Institute</th><th>Personell id</th><th>Personell department</th><th>Contract start</th><th>Contract end</th><th>Work hours</th><th>Payment/hour</th><th>Vacation (per year) in h</th><th></th>
+      <th>Institute</th><th>Personell id</th><th>Personell department</th><th>Contract start</th><th>Contract end</th><th>Work hours</th><th>Payment/hour</th><th>Vacation (per year) in h</th><th><a href="contract/add" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></th>
     </tr>
     {% for c in user.contract_set.all %}
       <tr>
-        <td>{{c.department}}</td><td>{{c.personell_number}}</td><td>{{c.personell}}</td><td>{{c.contract_begin}}</td><td>{{c.contract_end}}</td><td>{{c.hours}}</td><td>{{c.payment}} €</td><td>{{c.vacation}}<td></td>
+        <td>{{c.department}}</td><td>{{c.personell_number}}</td><td>{{c.personell}}</td><td>{{c.contract_begin}}</td><td>{{c.contract_end}}</td><td>{{c.hours}}</td><td>{{c.payment}} €</td><td>{{c.vacation}}<td><a href="/profile/contract/{{c.id}}/delete" class="btn btn-primary"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
       </tr>
     {% endfor %}
   </table>

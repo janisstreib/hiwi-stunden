@@ -2,10 +2,30 @@
 
 {% block content %}
 <div class="page-header">
-<h1>Your work</h1>
-</div>
+<h1>Your work {{month}}/{{year}}</h1>
+
 {% if contracts %}
 {% include "errorhandle.html" %}
+
+<form role="form" action="/" method="POST">
+  {% csrf_token %}
+   <div class="form-group">
+     <label for="date-sel">Month:</label>
+     <select class="form-control" name="month" id="date-sel" onchange="submit(this)">
+       {% for i in "xxxxxxxxxxxx" %}
+    <option {% ifequal month forloop.counter%} selected="selected" {%endifequal%}>{{ forloop.counter }}</option>
+{% endfor %}
+     </select>
+     <br/>
+     <label for="year">Year:</label>
+     <select class="form-control" id="year" name="year" onchange="submit(this)">
+       <option>{{year}}</option>
+     </select>
+   </div>
+   <input name="date" class="btn btn-primary pull-right" type="submit" value="Go"/>
+ </form>
+ <br/>
+ <hr/>
 {% for c in contracts %}
 <div class="panel panel-default">
   <!-- Default panel contents -->

@@ -142,7 +142,6 @@ def printView(request):
     pathComp = request.path_info.split("/")
     contract = Contract.objects.get(id=int(pathComp[2]), user=user)
     workL = WorkLog.objects.get(month=int(pathComp[3]),year=int(pathComp[4]), contract=contract)
-    print(contract)
     response = HttpResponse(content_type='application/pdf')
 
     out = tempfile.mkdtemp()
@@ -180,9 +179,6 @@ def printView(request):
     f = open(out+'/h.pdf', 'r')
     response.write(f.read())
     f.close()
-    #out.close()
-    # It's usually a good idea to set the 'Content-Length' header too.
-    # You can also set any other required headers: Cache-Control, etc.
     shutil.rmtree(out)
     return response
 

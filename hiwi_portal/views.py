@@ -41,9 +41,9 @@ def index(request):
             year = int(request.POST['year'])
             context['year'] = year
             context['month'] = month
-        if request.POST.get("contract-id"):
+        if request.POST.get("contract_id"):
             try:
-                contract = Contract.objects.get(id=request.POST["contract-id"])
+                contract = Contract.objects.get(id=request.POST["contract_id"])
                 wLog = WorkLog.objects.get(contract=contract, month=month, year=year)
                 wt = WorkTime()
                 wt.work_log = wLog
@@ -85,6 +85,8 @@ def index(request):
             except ValidationError as v:
                 context['error'] = v.messages
             context['post'] = 'y'
+            context['posted_contract'] = int(request.POST['contract_id'])
+            context['postdata'] = request.POST
     ctracs = []
     for c in contracts:
         if c.contract_begin.year > year or \

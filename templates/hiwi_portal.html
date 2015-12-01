@@ -48,11 +48,11 @@
     </tr>
     {% endfor %}
     <tr>
-      <td><input class="form-control" type="text" name="activity"/></td>
-      <td><input class="form-control datepicker" type="text" name="date"></td>
-      <td><input class="form-control timepicker" type="text" name="start"></td>
-      <td><input class="form-control timepicker" type="text" name="end"></td>
-      <td><input class="form-control" type="text" name="pause"/></td>
+      <td><input class="form-control" type="text" name="activity" {% ifequal c.id posted_contract %} value="{{postdata.activity}}"{%endifequal%}/></td>
+      <td><input class="form-control datepicker" type="text" name="date" {% ifequal c.id posted_contract %} value="{{postdata.date}}"{%endifequal%}/></td>
+      <td><input class="form-control timepicker" type="text" name="start" {% ifequal c.id posted_contract %} value="{{postdata.start}}"{%endifequal%}/></td>
+      <td><input class="form-control timepicker" type="text" name="end" {% ifequal c.id posted_contract %} value="{{postdata.end}}"{%endifequal%}/></td>
+      <td><input class="form-control" type="text" name="pause" {% ifequal c.id posted_contract %} value="{{postdata.pause}}"{%endifequal%}/></td>
       <td></td>
       <td><input class="btn btn-primary {% ifequal c.cSum c.hours%}disabled{%endifequal%}" {% ifequal c.cSum c.hours%}onclick="return false"{%endifequal%} value="OK" type="submit"/></td>
     </tr>
@@ -66,7 +66,7 @@
       <td><a href="contract/{{c.id}}/{{month}}/{{year}}/print" class="btn btn-success"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print</a></td>
     </tr>
   </table>
-  <input type="hidden" name="contract-id" value="{{c.id}}"/>
+  <input type="hidden" name="contract_id" value="{{c.id}}"/>
 </form>
 </div>
 {% endfor %}

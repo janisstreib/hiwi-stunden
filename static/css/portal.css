@@ -12,3 +12,6 @@
 .subtext {
   color: #c0c0c0;
 }
+.tooltip-inner {
+    white-space:pre-wrap;
+}

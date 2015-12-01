@@ -68,8 +68,8 @@ $(function() {
   $( ".datepicker" ).each(function( index ) {
     $( this ).datepicker();
     $( this ).datepicker("option", "dateFormat", "yy-mm-dd");
-     $('[data-toggle="tooltip"]').tooltip();
 });
+  $('[data-toggle="tooltip"]').tooltip({html: true});
 $( ".timepicker" ).each(function( index ) {
   $( this ).timepicker();
 });

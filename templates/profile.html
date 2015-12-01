@@ -51,7 +51,7 @@
   </div>
   <table class="table">
     <tr>
-      <th>Institute</th><th>Personell id</th><th>Personell department</th><th>Contract start</th><th>Contract end</th><th>Work hours</th><th>Payment/hour</th><th>Vacation hours/year</th><th><a href="contract/add" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></th>
+      <th>Institute</th><th>Personell id</th><th>Personell department</th><th>Contract start</th><th>Contract end</th><th>Work hours</th><th>Payment/hour</th><th>Vacation hours/year <span data-toggle="tooltip" data-placement="bottom" title="Calculated as follows:<br/>(hours * 200 * 3,95)/85" class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></th><th><a href="contract/add" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></th>
     </tr>
     {% for c in user.contract_set.all %}
       <tr>

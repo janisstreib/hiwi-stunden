@@ -46,7 +46,7 @@ class Contract(models.Model):
     hours = models.IntegerField()
     payment = models.DecimalField(max_digits=6, decimal_places=2)
     personell = models.CharField(max_length=2, choices=PERSONELL_DEPARTMENTS)
-    personell_number = models.IntegerField()
+    personell_number = models.CharField(max_length=200)
     contract_begin = models.DateField('Vertragsstart')
     contract_end = models.DateField('Vertragsende')
     vacation = models.PositiveIntegerField()

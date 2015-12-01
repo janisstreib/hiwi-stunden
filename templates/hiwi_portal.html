@@ -48,11 +48,11 @@
     </tr>
     {% endfor %}
     <tr>
-      <td><input class="form-control" type="text" name="activity" {% ifequal c.id posted_contract %} value="{{postdata.activity}}"{%endifequal%}/></td>
-      <td><input class="form-control datepicker" type="text" name="date" {% ifequal c.id posted_contract %} value="{{postdata.date}}"{%endifequal%}/></td>
-      <td><input class="form-control timepicker" type="text" name="start" {% ifequal c.id posted_contract %} value="{{postdata.start}}"{%endifequal%}/></td>
-      <td><input class="form-control timepicker" type="text" name="end" {% ifequal c.id posted_contract %} value="{{postdata.end}}"{%endifequal%}/></td>
-      <td><input class="form-control" type="text" name="pause" {% ifequal c.id posted_contract %} value="{{postdata.pause}}"{%endifequal%}/></td>
+      <td><input class="form-control" type="text" name="activity" {%if error %}{% ifequal c.id posted_contract %} value="{{postdata.activity}}"{%endifequal%}{%endif%}/></td>
+      <td><input class="form-control datepicker" type="text" name="date" {%if error %}{% ifequal c.id posted_contract %} value="{{postdata.date}}"{%endifequal%}{%endif%}/></td>
+      <td><input class="form-control timepicker" type="text" name="start" {%if error %}{% ifequal c.id posted_contract %} value="{{postdata.start}}"{%endifequal%}{%endif%}/></td>
+      <td><input class="form-control timepicker" type="text" name="end" {%if error %}{% ifequal c.id posted_contract %} value="{{postdata.end}}"{%endifequal%}{%endif%}/></td>
+      <td><input class="form-control" type="text" name="pause" {%if error %}{% ifequal c.id posted_contract %} value="{{postdata.pause}}"{%endifequal%}{%endif%}/></td>
       <td></td>
       <td><input class="btn btn-primary {% ifequal c.cSum c.hours%}disabled{%endifequal%}" {% ifequal c.cSum c.hours%}onclick="return false"{%endifequal%} value="OK" type="submit"/></td>
     </tr>

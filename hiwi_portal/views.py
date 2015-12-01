@@ -44,22 +44,24 @@ def index(request):
         if request.POST.get("contract_id"):
             try:
                 contract = Contract.objects.get(id=request.POST["contract_id"])
-                wLog = WorkLog.objects.get(contract=contract, month=month, year=year)
                 wt = WorkTime()
-                wt.work_log = wLog
                 wt.activity = request.POST['activity']
                 #wt.hours = request.POST['work']
                 wt.pause = request.POST['pause']
                 if not wt.pause:
                     wt.pause = 0
                 date = request.POST['date']
+                date = datetime.strptime(date, "%Y-%m-%d")
                 end = request.POST['end']
                 start = request.POST['start']
                 start = datetime.strptime(start, "%H:%M")
                 end = datetime.strptime(end, "%H:%M")
+                year = date.year
+                month = date.month
                 startStamp = time.mktime(start.timetuple())
                 endStamp = time.mktime(end.timetuple())
-                if datetime.strptime(date, "%Y-%m-%d").weekday() > 4:
+                wLog = WorkLog.objects.get(contract=contract, month=month, year=year)
+                if date.weekday() > 4:
                     raise ValidationError("You can only work from Mon to Fri.")
                 if start.hour < 6 or end.hour > 20 or (end.hour==20 and end.minute > 0):
                     raise ValidationError("You can only work at daytime (06-20h). Sorry coffee nerds ;(")
@@ -72,7 +74,7 @@ def index(request):
                     raise ValidationError("Worktime caped to 0.")
                 if calcHours(wLog)+wt.hours > contract.hours:
                     raise ValidationError("Max. monthly worktime exceeded!")
-                date = datetime.strptime(date, "%Y-%m-%d")
+                wt.work_log = wLog
                 wt.end = end
                 wt.begin = start
                 wt.date = date
@@ -87,6 +89,8 @@ def index(request):
             context['post'] = 'y'
             context['posted_contract'] = int(request.POST['contract_id'])
             context['postdata'] = request.POST
+    month = context['month']
+    year = context['year']
     ctracs = []
     for c in contracts:
         if c.contract_begin.year > year or \

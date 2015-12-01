@@ -50,6 +50,8 @@ def index(request):
                 wt.activity = request.POST['activity']
                 #wt.hours = request.POST['work']
                 wt.pause = request.POST['pause']
+                if not wt.pause:
+                    wt.pause = 0
                 date = request.POST['date']
                 end = request.POST['end']
                 start = request.POST['start']
@@ -86,7 +88,7 @@ def index(request):
         (c.contract_begin.year == year and c.contract_begin.month > month) or \
         (c.contract_end.year == year and c.contract_end.month < month):
             continue
-        
+
         workSum = 0
         try:
             workL = WorkLog.objects.get(contract=c, month=month, year=year)

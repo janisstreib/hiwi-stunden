@@ -65,7 +65,7 @@ class WorkLog(models.Model):
 class WorkTime(models.Model):
     work_log =  models.ForeignKey(WorkLog)
     hours = models.IntegerField()
-    pause = models.PositiveIntegerField()
+    pause = models.PositiveIntegerField(default=0)
     begin = models.TimeField('Start')
     end = models.TimeField('Ende')
     date = models.DateField()

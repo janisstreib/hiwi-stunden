@@ -59,6 +59,8 @@ def index(request):
                 end = datetime.strptime(end, "%H:%M")
                 startStamp = time.mktime(start.timetuple())
                 endStamp = time.mktime(end.timetuple())
+                if start.hour < 6 or end.hour > 20 or (end.hour==20 and end.minute > 0):
+                    raise ValidationError("You can only work at daytime. Sorry coffee nerds ;(")
                 if startStamp >= endStamp:
                     raise ValidationError("The start time have to be before the end time.")
                 if (int(wt.pause)*60*60) >= endStamp-startStamp:

@@ -62,7 +62,7 @@ def index(request):
                 if datetime.strptime(date, "%Y-%m-%d").weekday() > 4:
                     raise ValidationError("You can only work from Mon to Fri.")
                 if start.hour < 6 or end.hour > 20 or (end.hour==20 and end.minute > 0):
-                    raise ValidationError("You can only work at daytime. Sorry coffee nerds ;(")
+                    raise ValidationError("You can only work at daytime (06-20h). Sorry coffee nerds ;(")
                 if startStamp >= endStamp:
                     raise ValidationError('The start time have to be before the end time. In case of a flux capacitor incident please contact the technical support.')
                 if (int(wt.pause)*60*60) >= endStamp-startStamp:

@@ -63,7 +63,7 @@
 <h2>Erase all data</h2>
 <p>Hereby, all your work hours, contracts, your private mail and phone number stored on this site will be
 instantaneously erased.</p>
-<form action="/profile/delete" method="POST">
+<form action="/profile/delete" method="POST" onsubmit="return confirm('Do you really want to delete all your data?')">
 {% csrf_token %}
 <input type="submit" class="btn btn-danger" href="/profile/delete" value="Erase all account data"/>
 </form>

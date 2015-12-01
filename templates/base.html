@@ -68,7 +68,7 @@ $(function() {
   $( ".datepicker" ).each(function( index ) {
     $( this ).datepicker();
     if($(this).val())
-    $(this).datepicker('setDate', $(this).parseDate('yy-mm-dd', $(this).val()));
+      $(this).datepicker('setDate', $(this).parseDate('yy-mm-dd', $(this).val()));
     $( this ).datepicker("option", "dateFormat", "yy-mm-dd");
 });
   $('[data-toggle="tooltip"]').tooltip({html: true});

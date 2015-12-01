@@ -10,25 +10,25 @@
 {% csrf_token %}
 <table class="table">
 <tr>
-  <th>Institute</th><td><input class="form-control" id="institute" name="institute" type="text" /></td>
+  <th>Institute</th><td><input class="form-control" id="institute" name="institute" type="text" value="{{postdata.institute}}" /></td>
 </tr>
 <tr>
-  <th>Personell id</th><td><input class="form-control" id="personell-id" name="personell-id" type="text" /></td>
+  <th>Personell id</th><td><input class="form-control" id="personell-id" name="personell_id" type="text" value="{{postdata.personell_id}}"/></td>
 </tr>
 <tr>
-  <th>Personell department</th><td><select name="dp"><option>GF</option><option>UB</select></td>
+  <th>Personell department</th><td><select name="dp"><option {% ifequal postdata.dp "GF"%}selected="selected"{%endifequal%}>GF</option><option {% ifequal postdata.dp "UB"%}selected="selected"{%endifequal%}>UB</select></td>
 </tr>
 <tr>
-  <th>Contract start</th><td><input class="form-control datepicker" id="contract-start" name="contract-start" type="text" /></td>
+  <th>Contract start</th><td><input class="form-control datepicker" id="contract-start" name="contract_start" type="text" value="{{postdata.contract_start}}"/></td>
 </tr>
 <tr>
-  <th>Contract end </th><td><input class="form-control datepicker" id="contract-end" name="contract-end" type="text"/></td>
+  <th>Contract end </th><td><input class="form-control datepicker" id="contract-end" name="contract_end" type="text" value="{{postdata.contract_end}}"/></td>
 </tr>
 <tr>
-  <th>Work hours</th><td><input class="form-control" id="work-hours" name="work-hours" type="text" /></td>
+  <th>Work hours</th><td><input class="form-control" id="work-hours" name="work_hours" type="text" value="{{postdata.work_hours}}"/></td>
 </tr>
 <tr>
-  <th>Payment/hour</th><td><input class="form-control" id="payment" name="payment" type="text" /></td>
+  <th>Payment/hour</th><td><input class="form-control" id="payment" name="payment" type="text" value="{{postdata.payment}}"/></td>
 </tr>
 <tr>
   <th></th><td><input type="submit" class="pull-right btn btn-primary" value="Add"/></td>

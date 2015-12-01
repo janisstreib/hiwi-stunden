@@ -162,15 +162,15 @@ def contractAdd(request):
             contract = Contract()
             contract.department = request.POST['institute']
             contract.user = user
-            contract.personell_number = request.POST['personell-id']
-            cStart = request.POST['contract-start']
-            cEnd = request.POST['contract-end']
+            contract.personell_number = request.POST['personell_id']
+            cStart = request.POST['contract_start']
+            cEnd = request.POST['contract_end']
             cStart = datetime.strptime(cStart, "%Y-%m-%d")
             cEnd = datetime.strptime(cEnd, "%Y-%m-%d")
             contract.contract_begin = cStart
             contract.contract_end = cEnd
             contract.personell = request.POST['dp']
-            contract.hours = request.POST['work-hours']
+            contract.hours = request.POST['work_hours']
             contract.payment = request.POST['payment']
             contract.vacation = round((int(contract.hours) *20*3.95)/85.0)
             contract.clean_fields()
@@ -182,6 +182,7 @@ def contractAdd(request):
         print(v)
     except ValueError as v:
         context['error'] = [v.message]
+    context['postdata'] = request.POST
     return render(request, 'contract_add.html', context)
 
 @login_required

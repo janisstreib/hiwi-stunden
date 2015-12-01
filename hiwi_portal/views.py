@@ -58,6 +58,11 @@ def index(request):
                 end = datetime.strptime(end, "%H:%M")
                 year = date.year
                 month = date.month
+                if contract.contract_begin.year > year or \
+                contract.contract_end.year < year or \
+                (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
+                (contract.contract_end.year == year and contract.contract_end.month < month):
+                        raise ValidationError("Date out of contract.")
                 startStamp = time.mktime(start.timetuple())
                 endStamp = time.mktime(end.timetuple())
                 wLog = WorkLog.objects.get(contract=contract, month=month, year=year)

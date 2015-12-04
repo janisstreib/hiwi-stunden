@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import UserManager
 from django.core.validators import RegexValidator
 from django.core.validators import EmailValidator
+from django.core.validators import MaxValueValidator
 #
 class User(models.Model):
     firstname = models.CharField(max_length=200)
@@ -43,7 +44,7 @@ class Contract(models.Model):
     )
     user =  models.ForeignKey(Hiwi)
     department = models.CharField(max_length=200)
-    hours = models.IntegerField()
+    hours = models.PositiveIntegerField(validators = [MaxValueValidator(85)])
     payment = models.DecimalField(max_digits=6, decimal_places=2)
     personell = models.CharField(max_length=2, choices=PERSONELL_DEPARTMENTS)
     personell_number = models.CharField(max_length=200)

@@ -31,12 +31,12 @@
     <td><input class="form-control" id="kit-mail" type="text" value="{{user.email}}" disabled></td>
   </tr>
   <tr>
-    <th>Private E-Mail</th>
+    <th>Private E-Mail<span class="help-block">Optional</span></th>
     <td><input class="form-control" name="private_email" id="private-mail" type="text" value="{% if user.private_email %}{{user.private_email}}{% endif %}" ></td>
   </tr>
   <tr><td></td><td><input name="private_notif" type="checkbox" {% if user.notify_to_private %} checked {%endif%}/> Send notifications to my private E-Mail address specified above.</td></tr>
   <tr>
-    <th>Phone number</th>
+    <th>Phone number<span class="help-block">Optional</span></th>
     <td><input name="phone" class="form-control" id="phone" type="text" value="{% if user.phone_number %}{{user.phone_number}}{% endif %}" ></td>
   </tr>
   <tr><td></td><td><input type="submit" name="data" value="Save" class="btn btn-primary pull-right"/></td></tr>

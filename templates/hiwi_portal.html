@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Your work{% endblock %}
+{% load mathfilters %}
 {% block content %}
 <div class="page-header">
 <h1>Your work {{month}}/{{year}}</h1>
@@ -41,6 +42,10 @@
       <th>Activity (keyword, project)</th><th>Date</th><th>Start</th><th>End</th><th>Pause</th><th>Worktime</th><th></th>
 
     </tr>
+    <tr>
+      <th></th><th></th><th></th><th></th><th></th><th>Work from last month: {{c.current_worklog.overWork}}</th><th></th>
+
+    </tr>
     {% for w in c.current_worklog.worktime_set.all  %}
     <tr>
       <td>{{w.activity}}</td><td>{{w.date|date:"d.m.y"}}</td><td>{{w.begin|time:"H:i"}}</td><td>{{w.end|time:"H:i"}}</td><td>{{w.pause}}</td><td>{{w.hours}}</td>
@@ -54,7 +59,7 @@
       <td><input class="form-control timepicker" type="text" name="end" {%if error %}{% ifequal c.id posted_contract %} value="{{postdata.end}}"{%endifequal%}{%endif%}/></td>
       <td><input class="form-control" type="text" name="pause" {%if error %}{% ifequal c.id posted_contract %} value="{{postdata.pause}}"{%endifequal%}{%endif%}/></td>
       <td></td>
-      <td><input class="btn btn-primary {% ifequal c.cSum c.hours%}disabled{%endifequal%}" {% ifequal c.cSum c.hours%}onclick="return false"{%endifequal%} value="OK" type="submit"/></td>
+      <td><input class="btn btn-primary {% ifequal c.cSum c.hours|mul:1.5%}disabled{%endifequal%}" {% ifequal c.cSum c.hours|mul:1.5%}onclick="return false"{%endifequal%} value="OK" type="submit"/></td>
     </tr>
     <tr>
       <td></td>
@@ -62,7 +67,7 @@
       <td></td>
       <td></td>
       <td></td>
-      <td><strong>&Sigma; {{c.cSum}} {% if c.critSum %}<span data-toggle="tooltip" data-placement="bottom" title="{% ifequal c.cSum c.hours%}Your working time for this month reached its limit of {{c.hours}} hours.{%else%}You are near your monthly limit of {{c.hours}} hours.{%endifequal%}" class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true"></span>{% endif %}</strong></td>
+      <td><strong>&Sigma; {{c.cSum}} {% if c.critSum %}<span data-toggle="tooltip" data-placement="bottom" title="{% ifequal c.cSum c.hours|mul:1.5%}Your working time for this month reached its maximum limit of {{c.hours|mul:1.5}} hours.{%else%}You are near your maximum monthly limit of {{c.hours|mul:1.5}} hours.{%endifequal%}" class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true"></span>{% endif %}</strong></td>
       <td><a href="contract/{{c.id}}/{{month}}/{{year}}/print" class="btn btn-success"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print</a></td>
     </tr>
   </table>

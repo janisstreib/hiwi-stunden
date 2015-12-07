@@ -42,7 +42,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hiwi_portal',
-    'django_auth_ldap'
+    'django_auth_ldap',
+    'mathfilters'
 )
 
 MIDDLEWARE_CLASSES = (

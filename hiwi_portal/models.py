@@ -62,6 +62,7 @@ class WorkLog(models.Model):
     carer_signed = models.BooleanField(default=False)
     month = models.IntegerField()
     year = models.IntegerField()
+    overWork = models.PositiveIntegerField(default=0)
 
 class WorkTime(models.Model):
     work_log =  models.ForeignKey(WorkLog)

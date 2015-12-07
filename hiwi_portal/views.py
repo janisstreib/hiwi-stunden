@@ -15,11 +15,36 @@ from subprocess import Popen
 
 #TODO: In ordentlich im model
 def calcHours(worklog):
-    workSum = 0
+    workSum = worklog.overWork
     logs = worklog.worktime_set.all()
     for l in logs:
         workSum += l.hours
     return workSum
+
+def getWorkLog(contract, month, year):
+    try:
+        if contract.contract_begin.year > year or \
+        contract.contract_end.year < year or \
+        (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
+        (contract.contract_end.year == year and contract.contract_end.month < month):
+            raise ValidationError("Invalid workLog (shouldn't happen)")
+        workL = WorkLog.objects.get(contract=contract, month=month, year=year)
+        workSum = calcHours(workL)
+    except ObjectDoesNotExist:
+        workL = WorkLog()
+        workL.month = month
+        workL.year = year
+        workL.contract = contract
+        workL.save()
+    return workL
+
+def getNextWorkLog(contract, month, year):
+    nextMonth = month+1
+    nextYear = year
+    if nextMonth > 12:
+        nextMonth = 1
+        nextYear +=1
+    return getWorkLog(contract, nextMonth, nextYear)
 
 @login_required
 def index(request):
@@ -78,7 +103,13 @@ def index(request):
                 if(wt.hours == 0):
                     raise ValidationError("Worktime caped to 0.")
                 if calcHours(wLog)+wt.hours > contract.hours:
-                    raise ValidationError("Max. monthly worktime exceeded!")
+                    if (month == contract.contract_end.month and year == contract.contract_end.year) or calcHours(wLog)+wt.hours > round(contract.hours*1.5):
+                        raise ValidationError("Max. monthly worktime exceeded!")
+                    else:
+                        nextLog = getNextWorkLog(contract, month, year)
+                        nextLog.overWork = nextLog.overWork + calcHours(wLog)+wt.hours - contract.hours
+                        nextLog.save()
+
                 wt.work_log = wLog
                 wt.end = end
                 wt.begin = start
@@ -104,19 +135,11 @@ def index(request):
         (c.contract_end.year == year and c.contract_end.month < month):
             continue
 
-        workSum = 0
-        try:
-            workL = WorkLog.objects.get(contract=c, month=month, year=year)
-            workSum = calcHours(workL)
-        except ObjectDoesNotExist:
-            workL = WorkLog()
-            workL.month = month
-            workL.year = year
-            workL.contract = c
-            workL.save()
+        workL = getWorkLog(c, month, year)
+        workSum = calcHours(workL)
         c.cw=workL
         c.cSum = workSum
-        if c.hours-workSum < 6:
+        if c.hours*1.5-workSum <= c.hours*1.5-c.hours:
             c.critSum = True
         ctracs.append(c)
     context['contracts'] = ctracs
@@ -210,7 +233,6 @@ def printView(request):
     templR = templR.replace("{!contract_pay}", str(contract.payment))
     templR = templR.replace("{!my}", pathComp[3]+"/"+pathComp[4])
     rows = ""
-    endSum = 0
     for t in  workL.worktime_set.all():
         rows += "%s & %s & %s & %s & %s & %d\\\\ \hline\n" % (t.activity,
             t.date.strftime("%d.%m.%y") ,
@@ -218,9 +240,14 @@ def printView(request):
             t.end.strftime("%H:%M"),
             str(t.pause)+":00",
             t.hours)
-        endSum += t.hours
+    endSum = calcHours(workL)
     templR = templR.replace("{!rows}", rows)
     templR = templR.replace("{!sum}", str(endSum))
+    templR = templR.replace("{!overwork}", str(workL.overWork))
+    overNext = endSum - contract.hours
+    if overNext < 0:
+        overNext = 0
+    templR = templR.replace("{!overworknext}", str(overNext))
     templEnd.write(templR.encode("utf-8"))
     templEnd.close()
     p = Popen(['pdflatex', '-output-directory='+out, out+'/h.tex', '-interaction nonstopmode', '-halt-on-error', '-file-line-error'], cwd='milog-form/')

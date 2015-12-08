@@ -15,7 +15,7 @@ from subprocess import Popen
 
 #TODO: In ordentlich im model
 def calcHours(worklog):
-    workSum = worklog.overWork
+    workSum = worklog.overWork + round(worklog.contract.vacation/12.0)
     logs = worklog.worktime_set.all()
     for l in logs:
         workSum += l.hours
@@ -139,6 +139,7 @@ def index(request):
         workSum = calcHours(workL)
         c.cw=workL
         c.cSum = workSum
+        c.partVac = int(round(workL.contract.vacation/12.0))
         if c.hours*1.5-workSum <= c.hours*1.5-c.hours:
             c.critSum = True
         ctracs.append(c)
@@ -242,12 +243,13 @@ def printView(request):
             t.hours)
     endSum = calcHours(workL)
     templR = templR.replace("{!rows}", rows)
-    templR = templR.replace("{!sum}", str(endSum))
+    templR = templR.replace("{!sum}", str(int(endSum)))
     templR = templR.replace("{!overwork}", str(workL.overWork))
+    templR = templR.replace("{!vacation}", str(int(round(workL.contract.vacation/12.0))))
     overNext = endSum - contract.hours
     if overNext < 0:
         overNext = 0
-    templR = templR.replace("{!overworknext}", str(overNext))
+    templR = templR.replace("{!overworknext}", str(int(overNext)))
     templEnd.write(templR.encode("utf-8"))
     templEnd.close()
     p = Popen(['pdflatex', '-output-directory='+out, out+'/h.tex', '-interaction nonstopmode', '-halt-on-error', '-file-line-error'], cwd='milog-form/')

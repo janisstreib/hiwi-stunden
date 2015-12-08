@@ -9,9 +9,24 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 import tempfile
 import shutil
+import configparser
 import time
 from django.contrib.auth import logout
 from subprocess import Popen
+FORM = ""
+
+def getMilogPath():
+    global FORM
+    if FORM:
+        return FORM
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+    try:
+        FORM = config.get("formgen", "milog_path")
+        return FORM
+    except configparser.NoOptionError as e:
+        print ("Missing configuartion! ", e)
+        exit(1)
 
 #TODO: In ordentlich im model
 def calcHours(worklog):
@@ -218,7 +233,7 @@ def printView(request):
     response = HttpResponse(content_type='application/pdf')
 
     out = tempfile.mkdtemp()
-    templ = open("milog-form/milog_form_placehold.tex", "r")
+    templ = open(getMilogPath()+"/milog_form_placehold.tex", "r")
     templEnd = open(out+'/h.tex', "w+")
     templR = templ.read().decode("utf-8")
     templ.close()
@@ -252,7 +267,7 @@ def printView(request):
     templR = templR.replace("{!overworknext}", str(int(overNext)))
     templEnd.write(templR.encode("utf-8"))
     templEnd.close()
-    p = Popen(['pdflatex', '-output-directory='+out, out+'/h.tex', '-interaction nonstopmode', '-halt-on-error', '-file-line-error'], cwd='milog-form/')
+    p = Popen(['pdflatex', '-output-directory='+out, out+'/h.tex', '-interaction nonstopmode', '-halt-on-error', '-file-line-error'], cwd=getMilogPath())
     p.wait()
     f = open(out+'/h.pdf', 'r')
     response.write(f.read())

@@ -48,7 +48,7 @@
           </ul>
         </li>
             {% else %}
-            <li><a href="/login">Login</a></li>
+            <li class="{% active '^/login/.*' %}"><a href="/login">Login</a></li>
             {% endif %}
            </ul>
         </div><!--/.nav-collapse -->

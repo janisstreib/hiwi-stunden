@@ -112,6 +112,8 @@ def index(request):
                     raise ValidationError("You can only work at daytime (06-20h). Sorry coffee nerds ;(")
                 if end.hour - start.hour - int(wt.pause) > 10:
                     raise ValidationError("You can only work 10 hours a day.")
+                if end.hour - start.hour > 6 and int(wt.pause) < 1:
+                    raise ValidationError("You have to make a break of at least 1 hour.")
                 if startStamp >= endStamp:
                     raise ValidationError('The start time have to be before the end time. In case of a flux capacitor incident please contact the technical support.')
                 if (int(wt.pause)*60*60) >= endStamp-startStamp:

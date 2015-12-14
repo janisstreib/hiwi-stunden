@@ -292,3 +292,10 @@ def delete_contract(request):
     contr = Contract(user=request.user, id=int(request.path_info.split("/")[3]))
     contr.delete()
     return redirect("/profile/")
+
+@login_required
+def delete_work(request):
+    wt = WorkTime.objects.get(id=int(request.path_info.split("/")[2]))
+    if wt.work_log.contract.user == request.user:
+        wt.delete()
+    return redirect("/")

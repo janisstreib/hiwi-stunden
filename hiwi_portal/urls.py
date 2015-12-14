@@ -7,6 +7,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 urlpatterns = [
     url(r'^profile/contract/[0-9]+/delete$', views.delete_contract, name='contract delete'),
+    url(r'^work/[0-9]+/delete$', views.delete_work, name='work delete'),
     url(r'^profile/contract/add/$', views.contractAdd, name='contractAdd'),
     url(r'^profile/$', views.profile, name='profile'),
     url(r'^profile/delete$', views.delete_profile, name='delete profile'),

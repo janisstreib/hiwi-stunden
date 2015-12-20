@@ -73,3 +73,15 @@ class WorkTime(models.Model):
     end = models.TimeField('Ende')
     date = models.DateField()
     activity = models.CharField(max_length=200)
+
+class FixedWorkDustActivity(models.Model):
+    contract = models.ForeignKey(Contract)
+    description = models.CharField(max_length=200)
+    avg_length = models.IntegerField()
+    start = models.TimeField('Start')
+    week_day = models.PositiveIntegerField(validators = [MaxValueValidator(6)])
+
+class FillerWorkDustActivity(models.Model):
+    contract = models.ForeignKey(Contract)
+    description = models.CharField(max_length=200)
+    avg_length = models.IntegerField()

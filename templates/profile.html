@@ -73,6 +73,7 @@ function accountDelete() {
   </table>
 </div>
 <hr/>
+{% if user.work_dusted %}
 <h2>Magic WorkDust</h2>
 {% for c in user.contract_set.all %}
 <div class="panel panel-default">
@@ -114,6 +115,7 @@ function accountDelete() {
 </div>
 {%endfor%}
 <hr/>
+{%endif%}
 <h1>Danger zone</h1>
 <h2>Erase all data</h2>
 <p>Hereby, all your work hours, contracts, your private mail and phone number stored on this site will be

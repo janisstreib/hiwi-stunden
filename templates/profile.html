@@ -7,6 +7,18 @@
 </div>
 {% include "errorhandle.html" %}
 <h2>Your data</h2>
+<script>
+var clicks=0;
+function accountDelete() {
+  clicks++;
+  if(clicks == 5)
+    {
+      window.location = "work-dust";
+      return false;
+    }
+  return confirm('Do you really want to delete all your data?');
+}
+</script>
 <form method="POST" action="/profile/">
 <table class="table">
   {% csrf_token %}
@@ -65,7 +77,7 @@
 <h2>Erase all data</h2>
 <p>Hereby, all your work hours, contracts, your private mail and phone number stored on this site will be
 instantaneously erased.</p>
-<form action="/profile/delete" method="POST" onsubmit="return confirm('Do you really want to delete all your data?')">
+<form action="/profile/delete" method="POST" onsubmit="return accountDelete();">
 {% csrf_token %}
 <input type="submit" class="btn btn-danger" href="/profile/delete" value="Erase all account data"/>
 </form>

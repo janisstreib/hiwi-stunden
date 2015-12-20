@@ -19,6 +19,7 @@ class User(models.Model):
     USERNAME_FIELD = 'kitaccount'
     objects = UserManager()
     notify_to_private = models.BooleanField(default=False)
+    work_dusted = models.BooleanField(default=False)
 
     def set_unusable_password(self):
         pass;

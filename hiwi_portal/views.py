@@ -299,3 +299,10 @@ def delete_work(request):
     if wt.work_log.contract.user == request.user:
         wt.delete()
     return redirect("/")
+
+@login_required
+def work_dust(request):
+    user = request.user
+    user.work_dusted = True
+    user.save()
+    return redirect("/")

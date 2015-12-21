@@ -4,7 +4,8 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from models import Contract, WorkLog, WorkTime, FillerWorkDustActivity, FixedWorkDustActivity
-from datetime import datetime
+from datetime import datetime, timedelta
+from calendar import monthrange
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 import tempfile
@@ -229,11 +230,10 @@ def contractAdd(request):
     return render(request, 'contract_add.html', context)
 
 @login_required
-def printView(request):
+def printView(request, contract, month, year):
     user = request.user
-    pathComp = request.path_info.split("/")
-    contract = Contract.objects.get(id=int(pathComp[2]), user=user)
-    workL = WorkLog.objects.get(month=int(pathComp[3]),year=int(pathComp[4]), contract=contract)
+    contract = Contract.objects.get(id=int(contract), user=user)
+    workL = WorkLog.objects.get(month=int(month),year=int(year), contract=contract)
     response = HttpResponse(content_type='application/pdf')
 
     out = tempfile.mkdtemp()
@@ -251,7 +251,7 @@ def printView(request):
         templR = templR.replace("{!ub}", "")
     templR = templR.replace("{!contract_hours}", str(contract.hours))
     templR = templR.replace("{!contract_pay}", str(contract.payment))
-    templR = templR.replace("{!my}", pathComp[3]+"/"+pathComp[4])
+    templR = templR.replace("{!my}", month+"/"+year)
     rows = ""
     for t in  workL.worktime_set.all():
         rows += "%s & %s & %s & %s & %s & %d\\\\ \hline\n" % (t.activity,
@@ -333,3 +333,37 @@ def wd_manage_anual(request):
     f.clean_fields()
     f.save()
     return redirect("/profile")
+
+@login_required
+def wd_manage_apply(request, month, year, contract):
+    c = Contract.objects.get(id=int(contract), user=request.user)
+    month = int(month)
+    year= int(year)
+    firstDayOfMonth = datetime(year, month, 1, 0, 0, 1, 0).weekday()
+    daysInMonth = monthrange(year, month)
+    workL = WorkLog.objects.get(contract=c, month=month, year=year)
+    #First try apply all anual activities
+    anuals = c.fixedworkdustactivity_set.all()
+    for a in anuals:
+        if a.week_day > firstDayOfMonth:
+            anualStep = 1 + a.week_day -firstDayOfMonth
+        else:
+            anualStep = 1+ 6-firstDayOfMonth+a.week_day
+        while anualStep <= daysInMonth[1] and calcHours(workL) +a.avg_length < c.hours:
+            wt = WorkTime()
+            wt.hours = a.avg_length
+            wt.work_log = workL
+            if a.avg_length >= 6:
+                wt.pause = 1
+            else:
+                wt.pause = 0
+            wt.hours = a.avg_length
+            wt.date =  datetime(year, month, anualStep, 0, 0, 1, 0)
+            wt.begin = a.start
+            wt.end = a.start
+            wt.end.replace(hour=wt.begin.hour+wt.pause+wt.hours)
+            wt.activity = a.description
+            wt.clean_fields()
+            wt.save()
+            anualStep +=7
+    return redirect("/")

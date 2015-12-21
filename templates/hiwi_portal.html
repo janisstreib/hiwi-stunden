@@ -39,7 +39,7 @@
   <input type="hidden" name="year" value="{{year}}"/>
   <table class="table">
     <tr>
-      <th>Activity (keyword, project)</th><th>Date</th><th>Start</th><th>End</th><th>Pause</th><th>Worktime</th><th></th>
+      <th>Activity (keyword, project)</th><th>Date</th><th>Start</th><th>End</th><th>Pause</th><th>Worktime</th><th>{%if user.work_dusted%}<a href="/profile/work-dust/apply/{{month}}/{{year}}/{{c.id}}" class="btn btn-primary"><span class="glyphicon glyphicon-flash" aria-hidden="true"></span></a>{%endif%}</th>
 
     </tr>
     <tr>

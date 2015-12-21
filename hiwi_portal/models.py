@@ -79,7 +79,7 @@ class FixedWorkDustActivity(models.Model):
     description = models.CharField(max_length=200)
     avg_length = models.IntegerField()
     start = models.TimeField('Start')
-    week_day = models.PositiveIntegerField(validators = [MaxValueValidator(6)])
+    week_day = models.PositiveIntegerField(validators = [MaxValueValidator(4)])
 
 class FillerWorkDustActivity(models.Model):
     contract = models.ForeignKey(Contract)

@@ -77,24 +77,32 @@ function accountDelete() {
 <h2>Magic WorkDust</h2>
 {% for c in user.contract_set.all %}
 <div class="panel panel-default">
-  <div class="panel-heading">WorkDust setting for <b>{{c.department}}</b></div>
+  <div class="panel-heading">WorkDust settings for <b>{{c.department}}</b></div>
   <div class="panel-body">
     <p>Add and manage your templates for automatic filling.</p>
   </div>
   <b>Anual activities</b>
-  <form method="POST" action=".">
-    {% csrf_token %}
   <table class="table">
     <tr>
-      <th>Activity</th><th>Start</th><th>Average duration</th><th></th>
+      <th>Activity</th><th>Day of week</th><th>Start</th><th>Average duration</th><th></th>
     </tr>
-    {% for sa in c.fixedworkdustactivity%}
+    {% for sa in c.fixedworkdustactivity_set.all%}
     <tr>
-      <td>{{sa.description}}</td><td>{{sa.start}}</td><td>{{sa.avg_length}}</td><td></td>
+      <td>{{sa.description}}</td><td>{{sa.week_day}}</td><td>{{sa.start}}</td><td>{{sa.avg_length}}</td><td></td>
     </tr>
     {%endfor%}
     <tr>
-      <td><input class="form-control" type="text" name="description"/></td><td><input type="text" name="start" class="form-control timepicker"></td><td><input class="form-control" type="text" name="dur"/></td><td><input class="btn btn-primary" type="submit" value="OK"/></td>
+      <form method="POST" action="work-dust/add/anual">
+        <input type="hidden" name="contract" value="{{c.id}}"/>
+        {% csrf_token %}
+      <td><input class="form-control" type="text" name="description"/></td><td><select class="form-control" name="weekday">
+        <option value="0">Monday</option>
+        <option value="1">Tuesday</option>
+        <option value="2">Wednesday</option>
+        <option value="3">Thursday</option>
+        <option value="4">Friday</option>
+      </select><td><input type="text" name="start" class="form-control timepicker"></td><td><input class="form-control" type="text" name="dur"/></td><td><input class="btn btn-primary" type="submit" value="OK"/></td>
+    </form>
     </tr>
   </table>
   <b>Filling activities</b>
@@ -102,16 +110,19 @@ function accountDelete() {
     <tr>
       <th>Activity</th><th>Average duration</th><th></th>
     </tr>
-    {% for sa in c.fillerworkdustactivity%}
+    {% for sa in c.fillerworkdustactivity_set.all%}
     <tr>
       <td>{{sa.description}}</td><td>{{sa.avg_length}}</td><td></td>
     </tr>
     {%endfor%}
     <tr>
+      <form method="POST" action="work-dust/add/fill">
+        <input type="hidden" name="contract" value="{{c.id}}"/>
+        {% csrf_token %}
       <td><input class="form-control" type="text" name="description"/></td><td><input class="form-control" type="text" name="dur"/></td><td><input class="btn btn-primary" type="submit" value="OK"/></td>
+    </form>
     </tr>
   </table>
-</form>
 </div>
 {%endfor%}
 <hr/>

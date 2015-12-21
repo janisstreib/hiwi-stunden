@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from models import Contract, WorkLog, WorkTime
+from models import Contract, WorkLog, WorkTime, FillerWorkDustActivity, FixedWorkDustActivity
 from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
@@ -306,3 +306,30 @@ def work_dust(request):
     user.work_dusted = True
     user.save()
     return redirect("/")
+
+@login_required
+def wd_manage_fill(request):
+    user = request.user
+    c = Contract.objects.get(id=int(request.POST['contract']), user=user)
+    f = FillerWorkDustActivity()
+    f.contract = c
+    f.description = request.POST['description']
+    f.avg_length = request.POST['dur']
+    f.clean_fields()
+    f.save()
+    return redirect("/profile")
+
+@login_required
+def wd_manage_anual(request):
+    user = request.user
+    c = Contract.objects.get(id=int(request.POST['contract']), user=user)
+    f = FixedWorkDustActivity()
+    start = request.POST['start']
+    f.start = datetime.strptime(start, "%H:%M")
+    f.contract = c
+    f.week_day = request.POST['weekday']
+    f.description = request.POST['description']
+    f.avg_length = request.POST['dur']
+    f.clean_fields()
+    f.save()
+    return redirect("/profile")

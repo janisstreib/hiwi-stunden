@@ -346,9 +346,9 @@ def wd_manage_apply(request, month, year, contract):
     anuals = c.fixedworkdustactivity_set.all()
     for a in anuals:
         if a.week_day > firstDayOfMonth:
-            anualStep = 1 + a.week_day -firstDayOfMonth
+            anualStep = 2 + a.week_day -firstDayOfMonth
         else:
-            anualStep = 1+ 6-firstDayOfMonth+a.week_day
+            anualStep = 2 + 6-firstDayOfMonth+a.week_day
         while anualStep <= daysInMonth[1] and calcHours(workL) +a.avg_length < c.hours:
             wt = WorkTime()
             wt.hours = a.avg_length
@@ -366,4 +366,5 @@ def wd_manage_apply(request, month, year, contract):
             wt.clean_fields()
             wt.save()
             anualStep +=7
+    #Then fill with "other" activities
     return redirect("/")

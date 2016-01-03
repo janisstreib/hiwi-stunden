@@ -72,6 +72,16 @@ def index(request):
     year = now.year
     context['year'] = year
     context['month'] = month
+    if request.method == 'GET':
+        if request.GET.get('month') and request.GET.get('year'):
+            if int(request.GET['month']) > 12 or int(request.GET['month']) < 1:
+                raise ValidationError("Invalid month.")
+            if int(request.GET['year']) > year+2 or int(request.GET['year']) < year-2:
+                raise ValidationError("Invalid year.")
+            month = int(request.GET['month'])
+            year = int(request.GET['year'])
+            context['year'] = year
+            context['month'] = month
     if request.method == 'POST':
         if request.POST.get('month') and request.POST.get('year'):
             if int(request.POST['month']) > 12 or int(request.POST['month']) < 1:
@@ -294,8 +304,11 @@ def delete_contract(request):
 def delete_work(request):
     wt = WorkTime.objects.get(id=int(request.path_info.split("/")[2]))
     if wt.work_log.contract.user == request.user:
+        cid= str(wt.work_log.contract.id)
+        month = str(wt.work_log.month)
+        year = str(wt.work_log.year)
         wt.delete()
-    return redirect("/")
+    return redirect("/?month="+month+"&year="+year+"#"+cid)
 
 @login_required
 def work_dust(request):
@@ -356,11 +369,10 @@ def wd_manage_apply(request, month, year, contract):
                 wt.pause = 0
             wt.hours = a.avg_length
             wt.begin =  datetime(year, month, anualStep, a.start.hour, a.start.minute, 0, 0)
-            wt.end = a.start
-            wt.end.replace(hour=wt.begin.hour+wt.pause+wt.hours)
+            wt.end = wt.begin.replace(hour=wt.begin.hour+wt.pause+wt.hours)
             wt.activity = a.description
             wt.clean_fields()
             wt.save()
             anualStep +=7
     #Then fill with "other" activities
-    return redirect("/")
+    return redirect("/?month="+str(month)+"&year="+str(year)+"#"+str(c.id))

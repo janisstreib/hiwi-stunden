@@ -29,7 +29,7 @@
 {% include "errorhandle.html" %}
 
 {% for c in contracts %}
-<div class="panel panel-default">
+<div class="panel panel-default" id="{{c.id}}">
   <!-- Default panel contents -->
   <div class="panel-heading">Work hours for '<b>{{c.department}}</b>'</div>
 

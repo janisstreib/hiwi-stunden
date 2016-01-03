@@ -51,7 +51,7 @@
     </tr>
     {% for w in c.current_worklog.worktime_set.all  %}
     <tr>
-      <td>{{w.activity}}</td><td>{{w.date|date:"d.m.y"}}</td><td>{{w.begin|time:"H:i"}}</td><td>{{w.end|time:"H:i"}}</td><td>{{w.pause}}</td><td>{{w.hours}}</td>
+      <td>{{w.activity}}</td><td>{{w.begin|date:"d.m.y"}}</td><td>{{w.begin|time:"H:i"}}</td><td>{{w.end|time:"H:i"}}</td><td>{{w.pause}}</td><td>{{w.hours}}</td>
       <td><a href="/work/{{w.id}}/delete" class="btn btn-primary"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
     </tr>
     {% endfor %}

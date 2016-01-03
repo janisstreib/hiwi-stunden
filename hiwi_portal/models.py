@@ -69,9 +69,8 @@ class WorkTime(models.Model):
     work_log =  models.ForeignKey(WorkLog)
     hours = models.IntegerField()
     pause = models.PositiveIntegerField(default=0)
-    begin = models.TimeField('Start')
-    end = models.TimeField('Ende')
-    date = models.DateField()
+    begin = models.DateTimeField('Start')
+    end = models.DateTimeField('Ende')
     activity = models.CharField(max_length=200)
 
 class FixedWorkDustActivity(models.Model):

@@ -91,14 +91,12 @@ def index(request):
                 wt.pause = request.POST['pause']
                 if not wt.pause:
                     wt.pause = 0
-                date = request.POST['date']
-                date = datetime.strptime(date, "%Y-%m-%d")
-                end = request.POST['end']
-                start = request.POST['start']
-                start = datetime.strptime(start, "%H:%M")
-                end = datetime.strptime(end, "%H:%M")
-                year = date.year
-                month = date.month
+                start = request.POST['date'] + "  " + request.POST['start']
+                start = datetime.strptime(start, "%Y-%m-%d %H:%M")
+                end = request.POST['date'] + "  " + request.POST['end']
+                end = datetime.strptime(end, "%Y-%m-%d %H:%M")
+                year = start.year
+                month = start.month
                 if contract.contract_begin.year > year or \
                 contract.contract_end.year < year or \
                 (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
@@ -107,7 +105,7 @@ def index(request):
                 startStamp = time.mktime(start.timetuple())
                 endStamp = time.mktime(end.timetuple())
                 wLog = WorkLog.objects.get(contract=contract, month=month, year=year)
-                if date.weekday() > 4:
+                if start.weekday() > 4:
                     raise ValidationError("You can only work from Mon to Fri.")
                 if start.hour < 6 or end.hour > 20 or (end.hour==20 and end.minute > 0):
                     raise ValidationError("You can only work at daytime (06-20h). Sorry coffee nerds ;(")
@@ -133,7 +131,6 @@ def index(request):
                 wt.work_log = wLog
                 wt.end = end
                 wt.begin = start
-                wt.date = date
                 wt.clean_fields()
                 wt.save()
             except ObjectDoesNotExist as v:
@@ -255,7 +252,7 @@ def printView(request, contract, month, year):
     rows = ""
     for t in  workL.worktime_set.all():
         rows += "%s & %s & %s & %s & %s & %d\\\\ \hline\n" % (t.activity,
-            t.date.strftime("%d.%m.%y") ,
+            t.start.strftime("%d.%m.%y") ,
             t.begin.strftime("%H:%M"),
             t.end.strftime("%H:%M"),
             str(t.pause)+":00",

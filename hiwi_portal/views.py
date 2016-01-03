@@ -355,8 +355,7 @@ def wd_manage_apply(request, month, year, contract):
             else:
                 wt.pause = 0
             wt.hours = a.avg_length
-            wt.date =  datetime(year, month, anualStep, 0, 0, 1, 0)
-            wt.begin = a.start
+            wt.begin =  datetime(year, month, anualStep, a.start.hour, a.start.minute, 0, 0)
             wt.end = a.start
             wt.end.replace(hour=wt.begin.hour+wt.pause+wt.hours)
             wt.activity = a.description

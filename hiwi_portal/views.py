@@ -12,6 +12,7 @@ import tempfile
 import shutil
 import configparser
 import time
+from django.db.models import Max
 from django.contrib.auth import logout
 from subprocess import Popen
 FORM = ""
@@ -262,7 +263,7 @@ def printView(request, contract, month, year):
     rows = ""
     for t in  workL.worktime_set.all():
         rows += "%s & %s & %s & %s & %s & %d\\\\ \hline\n" % (t.activity,
-            t.start.strftime("%d.%m.%y") ,
+            t.begin.strftime("%d.%m.%y") ,
             t.begin.strftime("%H:%M"),
             t.end.strftime("%H:%M"),
             str(t.pause)+":00",
@@ -375,4 +376,7 @@ def wd_manage_apply(request, month, year, contract):
             wt.save()
             anualStep +=7
     #Then fill with "other" activities
+    largestFreeSlot = 0
+    smallestFiller = 0
+    #while
     return redirect("/?month="+str(month)+"&year="+str(year)+"#"+str(c.id))

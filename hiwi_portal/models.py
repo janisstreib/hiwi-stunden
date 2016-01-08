@@ -107,7 +107,7 @@ class WorkTime(models.Model):
         if(self.hours == 0):
             raise ValidationError("Worktime caped to 0.")
         if self.work_log.calcHours()+self.hours > contract.hours:
-            if (month == contract.contract_end.month and year == contract.contract_end.year) or calcHours(wLog)+wt.hours > round(contract.hours*1.5):
+            if (month == contract.contract_end.month and year == contract.contract_end.year) or wLog.calcHours()+self.hours > round(contract.hours*1.5):
                 raise ValidationError("Max. monthly worktime exceeded!")
             else:
                 nextLog = getNextWorkLog(contract, month, year)

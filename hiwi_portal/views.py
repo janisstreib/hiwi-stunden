@@ -344,6 +344,13 @@ def wd_manage_anual(request):
     f.clean_fields()
     f.save()
     return redirect("/profile")
+@login_required
+def wd_delete_anual(request, id):
+    user = request.user
+    a = FixedWorkDustActivity.objects.get(id=id)
+    if a.contract.user == user:
+        a.delete()
+    return redirect("/profile")
 
 @login_required
 def wd_manage_apply(request, month, year, contract):

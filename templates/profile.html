@@ -81,14 +81,14 @@ function accountDelete() {
   <div class="panel-body">
     <p>Add and manage your templates for automatic filling.</p>
   </div>
-  <b>Anual activities</b>
+  <b>Weekly activities</b>
   <table class="table">
     <tr>
       <th>Activity</th><th>Day of week</th><th>Start</th><th>Average duration</th><th></th>
     </tr>
     {% for sa in c.fixedworkdustactivity_set.all%}
     <tr>
-      <td>{{sa.description}}</td><td>{{sa.week_day}}</td><td>{{sa.start}}</td><td>{{sa.avg_length}}</td><td></td>
+      <td>{{sa.description}}</td><td>{{sa.week_day}}</td><td>{{sa.start}}</td><td>{{sa.avg_length}}</td><td><a href="/profile/work-dust/weekly/{{sa.id}}/delete" class="btn btn-primary"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
     </tr>
     {%endfor%}
     <tr>

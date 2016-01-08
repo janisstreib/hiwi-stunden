@@ -337,9 +337,11 @@ def wd_manage_apply(request, month, year, contract):
     anuals = c.fixedworkdustactivity_set.all()
     for a in anuals:
         if a.week_day > firstDayOfMonth:
-            anualStep = 1 + a.week_day -firstDayOfMonth
+            anualStep = 1+ a.week_day -firstDayOfMonth
+        elif a.week_day == firstDayOfMonth:
+            anualStep = 1
         else:
-            anualStep = 1 + 6-firstDayOfMonth+a.week_day
+            anualStep = 1 + 7-firstDayOfMonth+a.week_day
         while anualStep <= daysInMonth[1] and workL.calcHours() +a.avg_length < c.hours:
             wt = WorkTime()
             wt.hours = a.avg_length

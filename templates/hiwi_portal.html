@@ -4,8 +4,7 @@
 {% block content %}
 <div class="page-header">
 <h1>Your work {{month}}/{{year}}</h1>
-<form role="form" action="/" method="POST">
-  {% csrf_token %}
+<form role="form" action="/" method="GET">
    <div class="form-group">
      <label for="date-sel">Month:</label>
      <select class="form-control" name="month" id="date-sel" onchange="submit(this)">
@@ -21,7 +20,7 @@
        {%endfor%}
      </select>
    </div>
-   <input name="date" class="btn btn-primary pull-right" type="submit" value="Go"/>
+   <input class="btn btn-primary pull-right" type="submit" value="Go"/>
  </form>
  <br/>
 <hr/>

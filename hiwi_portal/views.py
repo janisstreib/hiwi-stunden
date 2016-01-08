@@ -17,27 +17,6 @@ from django.contrib.auth import logout
 from subprocess import Popen
 FORM = ""
 
-def getMilogPath():
-    global FORM
-    if FORM:
-        return FORM
-    config = configparser.ConfigParser()
-    config.read("config.ini")
-    try:
-        FORM = config.get("formgen", "milog_path")
-        return FORM
-    except configparser.NoOptionError as e:
-        print ("Missing configuartion! ", e)
-        exit(1)
-
-#TODO: In ordentlich im model
-def calcHours(worklog):
-    workSum = worklog.overWork + round(worklog.contract.vacation/12.0)
-    logs = worklog.worktime_set.all()
-    for l in logs:
-        workSum += l.hours
-    return workSum
-
 def getWorkLog(contract, month, year):
     try:
         if contract.contract_begin.year > year or \
@@ -46,7 +25,7 @@ def getWorkLog(contract, month, year):
         (contract.contract_end.year == year and contract.contract_end.month < month):
             raise ValidationError("Invalid workLog (shouldn't happen)")
         workL = WorkLog.objects.get(contract=contract, month=month, year=year)
-        workSum = calcHours(workL)
+        workSum = workL.calcHours()
     except ObjectDoesNotExist:
         workL = WorkLog()
         workL.month = month
@@ -62,6 +41,19 @@ def getNextWorkLog(contract, month, year):
         nextMonth = 1
         nextYear +=1
     return getWorkLog(contract, nextMonth, nextYear)
+
+def getMilogPath():
+    global FORM
+    if FORM:
+        return FORM
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+    try:
+        FORM = config.get("formgen", "milog_path")
+        return FORM
+    except configparser.NoOptionError as e:
+        print ("Missing configuartion! ", e)
+        exit(1)
 
 @login_required
 def index(request):
@@ -108,41 +100,14 @@ def index(request):
                 end = datetime.strptime(end, "%Y-%m-%d %H:%M")
                 year = start.year
                 month = start.month
-                if contract.contract_begin.year > year or \
-                contract.contract_end.year < year or \
-                (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
-                (contract.contract_end.year == year and contract.contract_end.month < month):
-                        raise ValidationError("Date out of contract.")
                 startStamp = time.mktime(start.timetuple())
                 endStamp = time.mktime(end.timetuple())
                 wLog = WorkLog.objects.get(contract=contract, month=month, year=year)
-                if start.weekday() > 4:
-                    raise ValidationError("You can only work from Mon to Fri.")
-                if start.hour < 6 or end.hour > 20 or (end.hour==20 and end.minute > 0):
-                    raise ValidationError("You can only work at daytime (06-20h). Sorry coffee nerds ;(")
-                if end.hour - start.hour - int(wt.pause) > 10:
-                    raise ValidationError("You can only work 10 hours a day.")
-                if end.hour - start.hour > 6 and int(wt.pause) < 1:
-                    raise ValidationError("You have to make a break of at least 1 hour.")
-                if startStamp >= endStamp:
-                    raise ValidationError('The start time have to be before the end time. In case of a flux capacitor incident please contact the technical support.')
-                if (int(wt.pause)*60*60) >= endStamp-startStamp:
-                    raise ValidationError("Such error, many pause!")
                 wt.hours = round(((endStamp-startStamp)-int(wt.pause)*60*60)/60/60)
-                if(wt.hours == 0):
-                    raise ValidationError("Worktime caped to 0.")
-                if calcHours(wLog)+wt.hours > contract.hours:
-                    if (month == contract.contract_end.month and year == contract.contract_end.year) or calcHours(wLog)+wt.hours > round(contract.hours*1.5):
-                        raise ValidationError("Max. monthly worktime exceeded!")
-                    else:
-                        nextLog = getNextWorkLog(contract, month, year)
-                        nextLog.overWork = nextLog.overWork + calcHours(wLog)+wt.hours - contract.hours
-                        nextLog.save()
-
                 wt.work_log = wLog
                 wt.end = end
                 wt.begin = start
-                wt.clean_fields()
+                wt.clean_fields(year, month)
                 wt.save()
             except ObjectDoesNotExist as v:
                 context['error'] = [v.message]
@@ -164,7 +129,7 @@ def index(request):
             continue
 
         workL = getWorkLog(c, month, year)
-        workSum = calcHours(workL)
+        workSum = workL.calcHours()
         c.cw=workL
         c.cSum = workSum
         c.partVac = int(round(workL.contract.vacation/12.0))
@@ -372,10 +337,10 @@ def wd_manage_apply(request, month, year, contract):
     anuals = c.fixedworkdustactivity_set.all()
     for a in anuals:
         if a.week_day > firstDayOfMonth:
-            anualStep = 2 + a.week_day -firstDayOfMonth
+            anualStep = 1 + a.week_day -firstDayOfMonth
         else:
-            anualStep = 2 + 6-firstDayOfMonth+a.week_day
-        while anualStep <= daysInMonth[1] and calcHours(workL) +a.avg_length < c.hours:
+            anualStep = 1 + 6-firstDayOfMonth+a.week_day
+        while anualStep <= daysInMonth[1] and workL.calcHours() +a.avg_length < c.hours:
             wt = WorkTime()
             wt.hours = a.avg_length
             wt.work_log = workL
@@ -387,7 +352,7 @@ def wd_manage_apply(request, month, year, contract):
             wt.begin =  datetime(year, month, anualStep, a.start.hour, a.start.minute, 0, 0)
             wt.end = wt.begin.replace(hour=wt.begin.hour+wt.pause+wt.hours)
             wt.activity = a.description
-            wt.clean_fields()
+            wt.clean_fields(year, month)
             wt.save()
             anualStep +=7
     #Then fill with "other" activities

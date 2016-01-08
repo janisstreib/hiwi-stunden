@@ -4,6 +4,8 @@ from django.contrib.auth.models import UserManager
 from django.core.validators import RegexValidator
 from django.core.validators import EmailValidator
 from django.core.validators import MaxValueValidator
+import time
+from django.core.exceptions import ValidationError
 #
 class User(models.Model):
     firstname = models.CharField(max_length=200)
@@ -65,6 +67,13 @@ class WorkLog(models.Model):
     year = models.IntegerField()
     overWork = models.PositiveIntegerField(default=0)
 
+    def calcHours(self):
+        workSum = self.overWork + round(self.contract.vacation/12.0)
+        logs = self.worktime_set.all()
+        for l in logs:
+            workSum += l.hours
+        return workSum
+
 class WorkTime(models.Model):
     work_log =  models.ForeignKey(WorkLog)
     hours = models.IntegerField()
@@ -72,6 +81,38 @@ class WorkTime(models.Model):
     begin = models.DateTimeField('Start')
     end = models.DateTimeField('Ende')
     activity = models.CharField(max_length=200)
+
+    def clean_fields(self, year=-1, month=-1):
+        super(WorkTime, self).clean_fields()
+        startStamp = time.mktime(self.begin.timetuple())
+        endStamp = time.mktime(self.end.timetuple())
+        contract = self.work_log.contract
+        if contract.contract_begin.year > year or \
+        contract.contract_end.year < year or \
+        (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
+        (contract.contract_end.year == year and contract.contract_end.month < month):
+                raise ValidationError("Date out of contract.")
+        if self.begin.weekday() > 4:
+            raise ValidationError("You can only work from Mon to Fri.")
+        if self.begin.hour < 6 or self.end.hour > 20 or (self.end.hour==20 and self.end.minute > 0):
+            raise ValidationError("You can only work at daytime (06-20h). Sorry coffee nerds ;(")
+        if self.end.hour - self.begin.hour - int(self.pause) > 10:
+            raise ValidationError("You can only work 10 hours a day.")
+        if self.end.hour - self.begin.hour > 6 and int(self.pause) < 1:
+            raise ValidationError("You have to make a break of at least 1 hour.")
+        if startStamp >= endStamp:
+            raise ValidationError('The start time have to be before the end time. In case of a flux capacitor incident please contact the technical support.')
+        if (int(self.pause)*60*60) >= endStamp-startStamp:
+            raise ValidationError("Such error, many pause!")
+        if(self.hours == 0):
+            raise ValidationError("Worktime caped to 0.")
+        if self.work_log.calcHours()+self.hours > contract.hours:
+            if (month == contract.contract_end.month and year == contract.contract_end.year) or calcHours(wLog)+wt.hours > round(contract.hours*1.5):
+                raise ValidationError("Max. monthly worktime exceeded!")
+            else:
+                nextLog = getNextWorkLog(contract, month, year)
+                nextLog.overWork = nextLog.overWork + calcHours(wLog)+wt.hours - contract.hours
+                nextLog.save()
 
 class FixedWorkDustActivity(models.Model):
     contract = models.ForeignKey(Contract)

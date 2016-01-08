@@ -261,7 +261,7 @@ def printView(request, contract, month, year):
     templR = templR.replace("{!contract_pay}", str(contract.payment))
     templR = templR.replace("{!my}", month+"/"+year)
     rows = ""
-    for t in  workL.worktime_set.all():
+    for t in  workL.worktime_set.all().order_by("begin"):
         rows += "%s & %s & %s & %s & %s & %d\\\\ \hline\n" % (t.activity,
             t.begin.strftime("%d.%m.%y") ,
             t.begin.strftime("%H:%M"),

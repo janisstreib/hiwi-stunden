@@ -15,6 +15,8 @@ import time
 from django.db.models import Max
 from django.contrib.auth import logout
 from subprocess import Popen
+from django.db.models import Min
+
 FORM = ""
 
 def getWorkLog(contract, month, year):
@@ -233,7 +235,7 @@ def printView(request, contract, month, year):
             t.end.strftime("%H:%M"),
             str(t.pause)+":00",
             t.hours)
-    endSum = calcHours(workL)
+    endSum = workL.calcHours()
     templR = templR.replace("{!rows}", rows)
     templR = templR.replace("{!sum}", str(int(endSum)))
     templR = templR.replace("{!overwork}", str(workL.overWork))
@@ -358,7 +360,10 @@ def wd_manage_apply(request, month, year, contract):
             wt.save()
             anualStep +=7
     #Then fill with "other" activities
+    filler = FillerWorkDustActivity.objects.all()
     largestFreeSlot = 0
-    smallestFiller = 0
-    #while
+    smallestFiller = filler.aggregate(Min('avg_length'))['avg_length__min']
+
+    while not smallestFiller == None and largestFreeSlot >= smallestFiller:
+        pass
     return redirect("/?month="+str(month)+"&year="+str(year)+"#"+str(c.id))

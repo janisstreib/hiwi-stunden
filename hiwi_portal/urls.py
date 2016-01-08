@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^profile/work-dust/add/fill$', views.wd_manage_fill, name='wd_manage_fill'),
     url(r'^profile/work-dust/apply/(10|11|12|[1-9])/([0-9]{4})/([0-9]+)$', views.wd_manage_apply, name='wd_manage_apply'),
     url(r'^profile/work-dust/weekly/([0-9]+)/delete$', views.wd_delete_anual, name='wd_manage_delte'),
+    url(r'^profile/work-dust/filler/([0-9]+)/delete$', views.wd_delete_filler, name='wd_manage_delte'),
     url(r'^$', views.index, name='index'),
     url(r'^faq/$', views.faq, name='faq'),
 ]

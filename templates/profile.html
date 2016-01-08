@@ -112,7 +112,7 @@ function accountDelete() {
     </tr>
     {% for sa in c.fillerworkdustactivity_set.all%}
     <tr>
-      <td>{{sa.description}}</td><td>{{sa.avg_length}}</td><td></td>
+      <td>{{sa.description}}</td><td>{{sa.avg_length}}</td><td><a href="/profile/work-dust/filler/{{sa.id}}/delete" class="btn btn-primary"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
     </tr>
     {%endfor%}
     <tr>

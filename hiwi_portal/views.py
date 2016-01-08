@@ -353,6 +353,14 @@ def wd_delete_anual(request, id):
     return redirect("/profile")
 
 @login_required
+def wd_delete_filler(request, id):
+    user = request.user
+    a = FillerWorkDustActivity.objects.get(id=id)
+    if a.contract.user == user:
+        a.delete()
+    return redirect("/profile")
+
+@login_required
 def wd_manage_apply(request, month, year, contract):
     c = Contract.objects.get(id=int(contract), user=request.user)
     month = int(month)

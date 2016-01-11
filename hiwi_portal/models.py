@@ -90,9 +90,10 @@ class WorkLog(models.Model):
         if lastMonth == 0:
             lastMonth = 12
             lastYear = lastYear-1
-        if lastMonth>=self.contract.contract_begin.month and lastYear >=self.contract.contract_begin.year:
+        try:
             lastLog = self.getWorkLog(self.contract, lastMonth, lastYear)
-
+        except ValidationError:
+            pass
         if not lastLog == None:
             lastLogCalc = lastLog.calcHours()
             if lastLogCalc > self.contract.hours:

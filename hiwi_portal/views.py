@@ -238,7 +238,7 @@ def printView(request, contract, month, year):
     endSum = workL.calcHours()
     templR = templR.replace("{!rows}", rows)
     templR = templR.replace("{!sum}", str(int(endSum)))
-    templR = templR.replace("{!overwork}", str(workL.overWork))
+    templR = templR.replace("{!overwork}", str(workL.calcOverWork()))
     templR = templR.replace("{!vacation}", str(int(round(workL.contract.vacation/12.0))))
     overNext = endSum - contract.hours
     if overNext < 0:

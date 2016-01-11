@@ -5,6 +5,7 @@ from django.core.validators import RegexValidator
 from django.core.validators import EmailValidator
 from django.core.validators import MaxValueValidator
 import time
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 #
 class User(models.Model):
@@ -65,10 +66,41 @@ class WorkLog(models.Model):
     carer_signed = models.BooleanField(default=False)
     month = models.IntegerField()
     year = models.IntegerField()
-    overWork = models.PositiveIntegerField(default=0)
+
+    def getWorkLog(self, contract, month, year):
+        try:
+            if contract.contract_begin.year > year or \
+            contract.contract_end.year < year or \
+            (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
+            (contract.contract_end.year == year and contract.contract_end.month < month):
+                raise ValidationError("Invalid workLog (shouldn't happen)")
+            workL = WorkLog.objects.get(contract=contract, month=month, year=year)
+        except ObjectDoesNotExist:
+            workL = WorkLog()
+            workL.month = month
+            workL.year = year
+            workL.contract = contract
+            workL.save()
+        return workL
+    def calcOverWork(self):
+        over = 0
+        lastLog = None
+        lastMonth = self.month -1;
+        lastYear = self.year
+        if lastMonth == 0:
+            lastMonth = 12
+            lastYear = lastYear-1
+        if lastMonth>=self.contract.contract_begin.month and lastYear >=self.contract.contract_begin.year:
+            lastLog = self.getWorkLog(self.contract, lastMonth, lastYear)
+
+        if not lastLog == None:
+            lastLogCalc = lastLog.calcHours()
+            if lastLogCalc > self.contract.hours:
+                over = (lastLogCalc - self.contract.hours)
+        return over
 
     def calcHours(self):
-        workSum = self.overWork + round(self.contract.vacation/12.0)
+        workSum = round(self.contract.vacation/12.0) + self.calcOverWork()
         logs = self.worktime_set.all()
         for l in logs:
             workSum += l.hours
@@ -134,10 +166,6 @@ class WorkTime(models.Model):
         if self.work_log.calcHours()+self.hours > contract.hours:
             if (month == contract.contract_end.month and year == contract.contract_end.year) or self.work_log.calcHours()+self.hours > round(contract.hours*1.5):
                 raise ValidationError("Max. monthly worktime exceeded!")
-            else:
-                nextLog = self.getNextWorkLog(contract, month, year)
-                nextLog.overWork = nextLog.overWork + self.work_log.calcHours()+self.hours - contract.hours
-                nextLog.save()
 
 class FixedWorkDustActivity(models.Model):
     contract = models.ForeignKey(Contract)

@@ -82,6 +82,31 @@ class WorkTime(models.Model):
     end = models.DateTimeField('Ende')
     activity = models.CharField(max_length=200)
 
+    def getWorkLog(self, contract, month, year):
+        try:
+            if contract.contract_begin.year > year or \
+            contract.contract_end.year < year or \
+            (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
+            (contract.contract_end.year == year and contract.contract_end.month < month):
+                raise ValidationError("Invalid workLog (shouldn't happen)")
+            workL = WorkLog.objects.get(contract=contract, month=month, year=year)
+            workSum = workL.calcHours()
+        except ObjectDoesNotExist:
+            workL = WorkLog()
+            workL.month = month
+            workL.year = year
+            workL.contract = contract
+            workL.save()
+        return workL
+
+    def getNextWorkLog(self, contract, month, year):
+        nextMonth = month+1
+        nextYear = year
+        if nextMonth > 12:
+            nextMonth = 1
+            nextYear +=1
+        return self.getWorkLog(contract, nextMonth, nextYear)
+
     def clean_fields(self, year=-1, month=-1):
         super(WorkTime, self).clean_fields()
         startStamp = time.mktime(self.begin.timetuple())
@@ -107,11 +132,11 @@ class WorkTime(models.Model):
         if(self.hours == 0):
             raise ValidationError("Worktime caped to 0.")
         if self.work_log.calcHours()+self.hours > contract.hours:
-            if (month == contract.contract_end.month and year == contract.contract_end.year) or wLog.calcHours()+self.hours > round(contract.hours*1.5):
+            if (month == contract.contract_end.month and year == contract.contract_end.year) or self.work_log.calcHours()+self.hours > round(contract.hours*1.5):
                 raise ValidationError("Max. monthly worktime exceeded!")
             else:
-                nextLog = getNextWorkLog(contract, month, year)
-                nextLog.overWork = nextLog.overWork + calcHours(wLog)+wt.hours - contract.hours
+                nextLog = self.getNextWorkLog(contract, month, year)
+                nextLog.overWork = nextLog.overWork + self.work_log.calcHours()+self.hours - contract.hours
                 nextLog.save()
 
 class FixedWorkDustActivity(models.Model):

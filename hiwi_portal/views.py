@@ -12,6 +12,7 @@ import tempfile
 import shutil
 import configparser
 import time
+import re
 from django.db.models import Max
 from django.contrib.auth import logout
 from subprocess import Popen
@@ -96,10 +97,16 @@ def index(request):
                 wt.pause = request.POST['pause']
                 if not wt.pause:
                     wt.pause = 0
-                start = request.POST['date'] + "  " + request.POST['start']
-                start = datetime.strptime(start, "%Y-%m-%d %H:%M")
-                end = request.POST['date'] + "  " + request.POST['end']
-                end = datetime.strptime(end, "%Y-%m-%d %H:%M")
+                start = request.POST['date'] + " " + request.POST['start']
+                startpattern = "%Y-%m-%d %H:%M"
+                if re.match(r'^([0-9]{2}|[0-9])$', request.POST['start']):
+                    startpattern = "%Y-%m-%d %H"
+                start = datetime.strptime(start, startpattern)
+                endpattern = "%Y-%m-%d %H:%M"
+                if re.match(r'^([0-9]{2}|[0-9])$', request.POST['end']):
+                    endpattern = "%Y-%m-%d %H"
+                end = request.POST['date'] + " " + request.POST['end']
+                end = datetime.strptime(end, endpattern)
                 year = start.year
                 month = start.month
                 startStamp = time.mktime(start.timetuple())

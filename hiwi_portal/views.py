@@ -302,7 +302,7 @@ def wd_manage_fill(request):
     f.avg_length = request.POST['dur']
     f.clean_fields()
     f.save()
-    return redirect("/profile")
+    return redirect("/profile#wd")
 
 @login_required
 def wd_manage_anual(request):
@@ -317,14 +317,14 @@ def wd_manage_anual(request):
     f.avg_length = request.POST['dur']
     f.clean_fields()
     f.save()
-    return redirect("/profile")
+    return redirect("/profile#wd")
 @login_required
 def wd_delete_anual(request, id):
     user = request.user
     a = FixedWorkDustActivity.objects.get(id=id)
     if a.contract.user == user:
         a.delete()
-    return redirect("/profile")
+    return redirect("/profile#wd")
 
 @login_required
 def wd_delete_filler(request, id):
@@ -332,7 +332,7 @@ def wd_delete_filler(request, id):
     a = FillerWorkDustActivity.objects.get(id=id)
     if a.contract.user == user:
         a.delete()
-    return redirect("/profile")
+    return redirect("/profile#wd")
 
 @login_required
 def wd_manage_apply(request, month, year, contract):

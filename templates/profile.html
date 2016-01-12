@@ -74,7 +74,7 @@ function accountDelete() {
 </div>
 <hr/>
 {% if user.work_dusted %}
-<h2>Magic WorkDust</h2>
+<h2 id="wd">Magic WorkDust</h2>
 {% for c in user.contract_set.all %}
 <div class="panel panel-default">
   <div class="panel-heading">WorkDust settings for <b>{{c.department}}</b></div>

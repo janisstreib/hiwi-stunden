@@ -248,8 +248,6 @@ def printView(request, contract, month, year):
     templR = templR.replace("{!overwork}", str(workL.calcOverWork()))
     templR = templR.replace("{!vacation}", str(int(round(workL.contract.vacation/12.0))))
     overNext = endSum - contract.hours
-    if overNext < 0:
-        overNext = 0
     templR = templR.replace("{!overworknext}", str(int(overNext)))
     templEnd.write(templR.encode("utf-8"))
     templEnd.close()

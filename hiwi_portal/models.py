@@ -99,8 +99,10 @@ class WorkLog(models.Model):
             over = (lastLogCalc - self.contract.hours)
         return over
 
-    def calcHours(self):
-        workSum = round(self.contract.vacation/12.0) + self.calcOverWork()
+    def calcHours(self, withOver=True):
+        workSum = round(self.contract.vacation/12.0)
+        if withOver:
+            workSum += self.calcOverWork()
         logs = self.worktime_set.all()
         for l in logs:
             workSum += l.hours

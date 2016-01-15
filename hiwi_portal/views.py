@@ -351,7 +351,7 @@ def wd_manage_apply(request, month, year, contract):
             anualStep = 1
         else:
             anualStep = 1 + 7-firstDayOfMonth+a.week_day
-        while anualStep <= daysInMonth[1] and workL.calcHours() +a.avg_length <= c.hours:
+        while anualStep <= daysInMonth[1] and workL.calcHours() +a.avg_length <= c.hours+workL.calcOverWork():
             wt = WorkTime()
             wt.hours = a.avg_length
             wt.work_log = workL

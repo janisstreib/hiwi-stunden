@@ -96,8 +96,7 @@ class WorkLog(models.Model):
             pass
         if not lastLog == None:
             lastLogCalc = lastLog.calcHours()
-            if lastLogCalc > self.contract.hours:
-                over = (lastLogCalc - self.contract.hours)
+            over = (lastLogCalc - self.contract.hours)
         return over
 
     def calcHours(self):

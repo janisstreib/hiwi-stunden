@@ -16,6 +16,7 @@ import ldap
 import logging
 import configparser
 from django_auth_ldap.config import LDAPSearch, LDAPSearch
+
 LOGIN_URL = 'mysite_login'
 LOGIN_REDIRECT_URL = '/'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,7 +32,6 @@ SECRET_KEY = '0nc$y#t0hoi80rlvp&!#(#7w%0mp*l(cooc(ck@a!@kq+k+llb'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -65,7 +65,7 @@ AUTHENTICATION_BACKENDS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ os.path.join(BASE_DIR, "templates")],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hiwi_stunden.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
@@ -94,7 +93,6 @@ DATABASES = {
     }
 }
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
@@ -107,7 +105,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -131,9 +128,9 @@ except configparser.NoOptionError as e:
     exit(1)
 
 AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=unix,ou=IDM,dc=kit,dc=edu",
-    ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+                                   ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
 AUTH_LDAP_START_TLS = False
-AUTH_LDAP_USER_ATTR_MAP = {"firstname": "givenName", "lastname": "sn", "email":"mail"}
+AUTH_LDAP_USER_ATTR_MAP = {"firstname": "givenName", "lastname": "sn", "email": "mail"}
 logger = logging.getLogger('django_auth_ldap')
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)

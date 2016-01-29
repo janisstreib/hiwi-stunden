@@ -7,16 +7,19 @@ from django.core.validators import MaxValueValidator
 import time
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
+
+
 #
 class User(models.Model):
     firstname = models.CharField(max_length=200)
     lastname = models.CharField(max_length=200)
-    kitaccount = models.CharField(max_length=32, unique=True) #funfact: old MS legacy :)
+    kitaccount = models.CharField(max_length=32, unique=True)  # funfact: old MS legacy :)
     email = models.CharField(max_length=200)
     private_email = models.CharField(max_length=200, null=True, validators=[EmailValidator()], blank=True)
     is_active = models.BooleanField(default=True)
     last_login = models.DateTimeField(null=True)
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
+                                 message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, null=True)
     REQUIRED_FIELDS = ['firstname', 'lastname', 'email']
     USERNAME_FIELD = 'kitaccount'
@@ -25,30 +28,38 @@ class User(models.Model):
     work_dusted = models.BooleanField(default=False)
 
     def set_unusable_password(self):
-        pass;
+        pass
+
     def get_username(self):
         return self.kitaccount
+
     def is_authenticated(self):
         return True
+
     def set_password(self, pw):
-        pass;
+        pass
+
+
 class Hiwi(User):
     pass
+
 
 class Department(models.Model):
     name = models.CharField(max_length=200)
 
+
 class Supervisor(User):
     department = models.ForeignKey(Department)
+
 
 class Contract(models.Model):
     PERSONELL_DEPARTMENTS = (
         ('GF', 'Großforschungsbereich'),
         ('UB', 'Universitätsbereich'),
     )
-    user =  models.ForeignKey(Hiwi)
+    user = models.ForeignKey(Hiwi)
     department = models.CharField(max_length=200)
-    hours = models.PositiveIntegerField(validators = [MaxValueValidator(85)])
+    hours = models.PositiveIntegerField(validators=[MaxValueValidator(85)])
     payment = models.DecimalField(max_digits=6, decimal_places=2)
     personell = models.CharField(max_length=2, choices=PERSONELL_DEPARTMENTS)
     personell_number = models.CharField(max_length=200)
@@ -60,6 +71,7 @@ class Contract(models.Model):
     def current_worklog(self):
         return self.cw
 
+
 class WorkLog(models.Model):
     contract = models.ForeignKey(Contract)
     printed = models.BooleanField(default=False)
@@ -70,9 +82,9 @@ class WorkLog(models.Model):
     def getWorkLog(self, contract, month, year):
         try:
             if contract.contract_begin.year > year or \
-            contract.contract_end.year < year or \
-            (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
-            (contract.contract_end.year == year and contract.contract_end.month < month):
+                            contract.contract_end.year < year or \
+                    (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
+                    (contract.contract_end.year == year and contract.contract_end.month < month):
                 raise ValidationError("Invalid workLog (shouldn't happen)")
             workL = WorkLog.objects.get(contract=contract, month=month, year=year)
         except ObjectDoesNotExist:
@@ -82,14 +94,15 @@ class WorkLog(models.Model):
             workL.contract = contract
             workL.save()
         return workL
-    def calcOverWork(self):
+
+    def calc_over_work(self):
         over = 0
         lastLog = None
-        lastMonth = self.month -1;
+        lastMonth = self.month - 1;
         lastYear = self.year
         if lastMonth == 0:
             lastMonth = 12
-            lastYear = lastYear-1
+            lastYear = lastYear - 1
         try:
             lastLog = self.getWorkLog(self.contract, lastMonth, lastYear)
         except ValidationError:
@@ -100,16 +113,17 @@ class WorkLog(models.Model):
         return over
 
     def calcHours(self, withOver=True):
-        workSum = round(self.contract.vacation/12.0)
+        workSum = round(self.contract.vacation / 12.0)
         if withOver:
-            workSum += self.calcOverWork()
+            workSum += self.calc_over_work()
         logs = self.worktime_set.all()
         for l in logs:
             workSum += l.hours
         return workSum
 
+
 class WorkTime(models.Model):
-    work_log =  models.ForeignKey(WorkLog)
+    work_log = models.ForeignKey(WorkLog)
     hours = models.IntegerField()
     pause = models.PositiveIntegerField(default=0)
     begin = models.DateTimeField('Start')
@@ -119,9 +133,9 @@ class WorkTime(models.Model):
     def getWorkLog(self, contract, month, year):
         try:
             if contract.contract_begin.year > year or \
-            contract.contract_end.year < year or \
-            (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
-            (contract.contract_end.year == year and contract.contract_end.month < month):
+                            contract.contract_end.year < year or \
+                    (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
+                    (contract.contract_end.year == year and contract.contract_end.month < month):
                 raise ValidationError("Invalid workLog (shouldn't happen)")
             workL = WorkLog.objects.get(contract=contract, month=month, year=year)
             workSum = workL.calcHours()
@@ -134,11 +148,11 @@ class WorkTime(models.Model):
         return workL
 
     def getNextWorkLog(self, contract, month, year):
-        nextMonth = month+1
+        nextMonth = month + 1
         nextYear = year
         if nextMonth > 12:
             nextMonth = 1
-            nextYear +=1
+            nextYear += 1
         return self.getWorkLog(contract, nextMonth, nextYear)
 
     def clean_fields(self, year=-1, month=-1):
@@ -147,34 +161,39 @@ class WorkTime(models.Model):
         endStamp = time.mktime(self.end.timetuple())
         contract = self.work_log.contract
         if contract.contract_begin.year > year or \
-        contract.contract_end.year < year or \
-        (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
-        (contract.contract_end.year == year and contract.contract_end.month < month):
-                raise ValidationError("Date out of contract.")
+                        contract.contract_end.year < year or \
+                (contract.contract_begin.year == year and contract.contract_begin.month > month) or \
+                (contract.contract_end.year == year and contract.contract_end.month < month):
+            raise ValidationError("Date out of contract.")
         if self.begin.weekday() > 4:
             raise ValidationError("You can only work from Mon to Fri.")
-        if self.begin.hour < 6 or self.end.hour > 20 or (self.end.hour==20 and self.end.minute > 0):
+        if self.begin.hour < 6 or self.end.hour > 20 or (self.end.hour == 20 and self.end.minute > 0):
             raise ValidationError("You can only work at daytime (06-20h). Sorry coffee nerds ;(")
         if self.end.hour - self.begin.hour - int(self.pause) > 10:
             raise ValidationError("You can only work 10 hours a day.")
         if self.end.hour - self.begin.hour > 6 and int(self.pause) < 1:
             raise ValidationError("You have to make a break of at least 1 hour.")
         if startStamp >= endStamp:
-            raise ValidationError('The start time have to be before the end time. In case of a flux capacitor incident please contact the technical support.')
-        if (int(self.pause)*60*60) >= endStamp-startStamp:
+            raise ValidationError(
+                'The start time have to be before the end time. In case of a flux capacitor incident please contact the technical support.')
+        if (int(self.pause) * 60 * 60) >= endStamp - startStamp:
             raise ValidationError("Such error, many pause!")
-        if(self.hours == 0):
+        if (self.hours == 0):
             raise ValidationError("Worktime caped to 0.")
-        if self.work_log.calcHours()+self.hours > contract.hours:
-            if (month == contract.contract_end.month and year == contract.contract_end.year) or self.work_log.calcHours()+self.hours > round(contract.hours*1.5):
+        if self.work_log.calcHours() + self.hours > contract.hours:
+            if (
+                            month == contract.contract_end.month and year == contract.contract_end.year) or self.work_log.calcHours() + self.hours > round(
+                        contract.hours * 1.5):
                 raise ValidationError("Max. monthly worktime exceeded!")
+
 
 class FixedWorkDustActivity(models.Model):
     contract = models.ForeignKey(Contract)
     description = models.CharField(max_length=200)
     avg_length = models.IntegerField()
     start = models.TimeField('Start')
-    week_day = models.PositiveIntegerField(validators = [MaxValueValidator(4)])
+    week_day = models.PositiveIntegerField(validators=[MaxValueValidator(4)])
+
 
 class FillerWorkDustActivity(models.Model):
     contract = models.ForeignKey(Contract)

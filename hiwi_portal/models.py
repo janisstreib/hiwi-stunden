@@ -97,7 +97,7 @@ class WorkLog(models.Model):
         return workL
 
     def calc_over_work(self):
-        over = 0
+        over = 0.0
         lastLog = None
         lastMonth = self.month - 1;
         lastYear = self.year
@@ -114,7 +114,7 @@ class WorkLog(models.Model):
         return over
 
     def calcHours(self, withOver=True):
-        workSum = round(self.contract.vacation / 12.0)
+        workSum = float(round(self.contract.vacation / 12.0))
         if withOver:
             workSum += self.calc_over_work()
         logs = self.worktime_set.all()

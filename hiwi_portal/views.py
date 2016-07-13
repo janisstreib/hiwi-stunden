@@ -243,7 +243,7 @@ def printView(request, contract, month, year):
     templR = templR.replace("{!my}", month + "/" + year)
     rows = ""
     for t in workL.worktime_set.all().order_by("begin"):
-        rows += "%s & %s & %s & %s & %s & %d\\\\ \hline\n" % (t.activity,
+        rows += "%s & %s & %s & %s & %s & %f\\\\ \hline\n" % (t.activity,
                                                               t.begin.strftime("%d.%m.%y"),
                                                               t.begin.strftime("%H:%M"),
                                                               t.end.strftime("%H:%M"),
@@ -251,7 +251,7 @@ def printView(request, contract, month, year):
                                                               t.hours)
     endSum = workL.calcHours(False)
     templR = templR.replace("{!rows}", rows)
-    templR = templR.replace("{!sum}", str(int(endSum)))
+    templR = templR.replace("{!sum}", str(float(endSum)))
     templR = templR.replace("{!overwork}", str(workL.calc_over_work()))
     templR = templR.replace("{!vacation}", str(int(round(workL.contract.vacation / 12.0))))
     overNext = workL.calcHours() - contract.hours

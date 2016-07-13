@@ -255,7 +255,7 @@ def printView(request, contract, month, year):
     templR = templR.replace("{!overwork}", str(workL.calc_over_work()))
     templR = templR.replace("{!vacation}", str(int(round(workL.contract.vacation / 12.0))))
     overNext = workL.calcHours() - contract.hours
-    templR = templR.replace("{!overworknext}", str(int(overNext)))
+    templR = templR.replace("{!overworknext}", str(float(overNext)))
     templEnd.write(templR.encode("utf-8"))
     templEnd.close()
     p = Popen(['pdflatex', '-output-directory=' + out, out + '/h.tex', '-interaction nonstopmode', '-halt-on-error',

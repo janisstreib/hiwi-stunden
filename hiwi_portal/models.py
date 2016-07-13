@@ -4,6 +4,7 @@ from django.contrib.auth.models import UserManager
 from django.core.validators import RegexValidator
 from django.core.validators import EmailValidator
 from django.core.validators import MaxValueValidator
+from django.core.validators import MinValueValidator
 import time
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
@@ -124,7 +125,7 @@ class WorkLog(models.Model):
 
 class WorkTime(models.Model):
     work_log = models.ForeignKey(WorkLog)
-    hours = models.IntegerField()
+    hours = models.FloatField(validators=[MinValueValidator(0)])
     pause = models.PositiveIntegerField(default=0)
     begin = models.DateTimeField('Start')
     end = models.DateTimeField('Ende')
@@ -198,4 +199,4 @@ class FixedWorkDustActivity(models.Model):
 class FillerWorkDustActivity(models.Model):
     contract = models.ForeignKey(Contract)
     description = models.CharField(max_length=200)
-    avg_length = models.IntegerField()
+    avg_length = models.FloatField(validators=[MinValueValidator(0)])

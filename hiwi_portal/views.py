@@ -115,7 +115,7 @@ def index(request):
                 startStamp = time.mktime(start.timetuple())
                 endStamp = time.mktime(end.timetuple())
                 wLog = WorkLog.objects.get(contract=contract, month=month, year=year)
-                wt.hours = ((endStamp - startStamp) - float(wt.pause) * 60 * 60) / 60.0 / 60.0
+                wt.hours = round((((endStamp - startStamp) - float(wt.pause) * 60 * 60) / 60.0 / 60.0)*10)/10.0
                 wt.work_log = wLog
                 wt.end = end
                 wt.begin = start

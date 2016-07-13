@@ -186,7 +186,7 @@ class WorkTime(models.Model):
                             month == contract.contract_end.month and year == contract.contract_end.year) or self.work_log.calcHours() + self.hours > round(
                         contract.hours * 1.5) or self.work_log.getWorkLog(contract=contract,
                                                                           month=contract.contract_end.month,
-                                                                          year=contract.contract_end.year).calcHours() > contract.hours:
+                                                                          year=contract.contract_end.year).calcHours() + self.hours > contract.hours:
                 raise ValidationError("Max. monthly worktime exceeded!")
 
 

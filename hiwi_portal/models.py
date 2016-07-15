@@ -191,7 +191,7 @@ class WorkTime(models.Model):
 class FixedWorkDustActivity(models.Model):
     contract = models.ForeignKey(Contract)
     description = models.CharField(max_length=200)
-    avg_length = models.IntegerField()
+    avg_length = models.FloatField(validators=[MinValueValidator(0.1)])
     start = models.TimeField('Start')
     week_day = models.PositiveIntegerField(validators=[MaxValueValidator(4)])
 

@@ -2,6 +2,7 @@ import re
 
 from django import template
 from django.core.urlresolvers import reverse, NoReverseMatch
+from django.template import Library
 
 register = template.Library()
 
@@ -16,3 +17,12 @@ def active(context, pattern_or_urlname):
     if re.search(pattern, path):
         return 'active'
     return ''
+
+
+register = Library()
+
+
+@register.filter_function
+def order_by(queryset, args):
+    args = [x.strip() for x in args.split(',')]
+    return queryset.order_by(*args)

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Your work{% endblock %}
 {% load mathfilters %}
+{% load mytags %}
 {% block content %}
 <div class="page-header">
 <h1>Your work {{month}}/{{year}}</h1>
@@ -48,7 +49,7 @@
       <th></th><th></th><th></th><th></th><th></th><th>Vacation: {{c.partVac}}</th><th></th>
 
     </tr>
-    {% for w in c.current_worklog.worktime_set.all  %}
+    {% for w in c.current_worklog.worktime_set.all|order_by:"begin" %}
     <tr>
       <td>{{w.activity}}</td><td>{{w.begin|date:"d.m.y"}}</td><td>{{w.begin|time:"H:i"}}</td><td>{{w.end|time:"H:i"}}</td><td>{{w.pause}}</td><td>{{w.hours}}</td>
       <td><a href="/work/{{w.id}}/delete" class="btn btn-primary"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>

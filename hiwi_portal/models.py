@@ -119,17 +119,21 @@ class WorkLog(models.Model):
             workSum += self.calc_over_work()
         logs = self.worktime_set.all()
         for l in logs:
-            workSum += l.hours
+            workSum += l.hours()
         return workSum
 
 
 class WorkTime(models.Model):
     work_log = models.ForeignKey(WorkLog)
-    hours = models.FloatField(validators=[MinValueValidator(0)])
     pause = models.PositiveIntegerField(default=0)
     begin = models.DateTimeField('Start')
     end = models.DateTimeField('Ende')
     activity = models.CharField(max_length=200)
+
+    def hours(self):
+        start_stamp = time.mktime(self.begin.timetuple())
+        end_stamp = time.mktime(self.end.timetuple())
+        return round((((end_stamp - start_stamp) - float(self.pause) * 60 * 60) / 60.0 / 60.0) * 100) / 100.0
 
     def getWorkLog(self, contract, month, year):
         try:
@@ -179,11 +183,11 @@ class WorkTime(models.Model):
                 'The start time have to be before the end time. In case of a flux capacitor incident please contact the technical support.')
         if (int(self.pause) * 60 * 60) >= endStamp - startStamp:
             raise ValidationError("Such error, many pause!")
-        if (self.hours == 0):
+        if self.hours() == 0:
             raise ValidationError("Worktime caped to 0.")
-        if self.work_log.calcHours() + self.hours > contract.hours:
+        if self.work_log.calcHours() + self.hours() > contract.hours:
             if (
-                            month == contract.contract_end.month and year == contract.contract_end.year) or self.work_log.calcHours() + self.hours > round(
+                            month == contract.contract_end.month and year == contract.contract_end.year) or self.work_log.calcHours() + self.hours() > round(
                         contract.hours * 1.5):
                 raise ValidationError("Max. monthly worktime exceeded!")
 

@@ -97,7 +97,6 @@ def index(request):
                 contract = Contract.objects.get(id=request.POST["contract_id"])
                 wt = WorkTime()
                 wt.activity = request.POST['activity']
-                # wt.hours = request.POST['work']
                 wt.pause = request.POST['pause']
                 if not wt.pause:
                     wt.pause = 0
@@ -113,10 +112,7 @@ def index(request):
                 end = datetime.strptime(end, endpattern)
                 year = start.year
                 month = start.month
-                startStamp = time.mktime(start.timetuple())
-                endStamp = time.mktime(end.timetuple())
                 wLog = WorkLog.objects.get(contract=contract, month=month, year=year)
-                wt.hours = round((((endStamp - startStamp) - float(wt.pause) * 60 * 60) / 60.0 / 60.0)*10)/10.0
                 wt.work_log = wLog
                 wt.end = end
                 wt.begin = start
@@ -244,12 +240,12 @@ def printView(request, contract, month, year):
     templR = templR.replace("{!my}", month + "/" + year)
     rows = ""
     for t in workL.worktime_set.all().order_by("begin"):
-        rows += "%s & %s & %s & %s & %s & %.1f\\\\ \hline\n" % (t.activity,
-                                                              t.begin.strftime("%d.%m.%y"),
-                                                              t.begin.strftime("%H:%M"),
-                                                              t.end.strftime("%H:%M"),
-                                                              str(t.pause) + ":00",
-                                                              t.hours)
+        rows += "%s & %s & %s & %s & %s & %.2f\\\\ \hline\n" % (t.activity,
+                                                                t.begin.strftime("%d.%m.%y"),
+                                                                t.begin.strftime("%H:%M"),
+                                                                t.end.strftime("%H:%M"),
+                                                                str(t.pause) + ":00",
+                                                                t.hours())
     endSum = workL.calcHours(False)
     templR = templR.replace("{!rows}", rows)
     templR = templR.replace("{!sum}", str(float(endSum)))
@@ -370,16 +366,14 @@ def wd_manage_apply(request, month, year, contract):
             anualStep = 1 + 7 - firstDayOfMonth + a.week_day
         while anualStep <= daysInMonth[1] and workL.calcHours() + a.avg_length <= c.hours:
             wt = WorkTime()
-            wt.hours = a.avg_length
             wt.work_log = workL
             if a.avg_length >= 6:
                 wt.pause = 1
             else:
                 wt.pause = 0
-            wt.hours = a.avg_length
             wt.begin = datetime(year, month, anualStep, a.start.hour, a.start.minute, 0, 0)
-            wt.end = wt.begin.replace(hour=int(wt.begin.hour + math.floor(wt.hours) + wt.pause))
-            wt.end = wt.end.replace(minute=int(round((wt.hours-math.floor(wt.hours))*60)))
+            wt.end = wt.begin.replace(hour=int(wt.begin.hour + math.floor(a.avg_length) + wt.pause))
+            wt.end = wt.end.replace(minute=int(round((a.avg_length - math.floor(a.avg_length)) * 60)))
             wt.activity = a.description
             wt.clean_fields(year, month)
             wt.save()

@@ -372,8 +372,11 @@ def wd_manage_apply(request, month, year, contract):
             else:
                 wt.pause = 0
             wt.begin = datetime(year, month, anualStep, a.start.hour, a.start.minute, 0, 0)
-            wt.end = wt.begin.replace(hour=int(wt.begin.hour + math.floor(a.avg_length) + wt.pause))
-            wt.end = wt.end.replace(minute=int(round((a.avg_length - math.floor(a.avg_length)) * 60)))
+            beginstamp = (wt.begin - datetime(1970, 1, 1)).total_seconds()
+            wt.end = datetime.fromtimestamp(beginstamp +
+                                            a.avg_length * 60.0*60.0 + wt.pause * 60.0*60.0)
+            # wt.end = wt.begin.replace(hour=int(wt.begin.hour + math.floor(a.avg_length) + wt.pause))
+            # wt.end = wt.end.replace(minute=int(round((a.avg_length - math.floor(a.avg_length)) * 60)))
             wt.activity = a.description
             wt.clean_fields(year, month)
             wt.save()

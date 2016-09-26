@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 import os
+from django.contrib.auth import views as auth_views
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 urlpatterns = [
     url(r'^', include('hiwi_portal.urls')),
-    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'},
-        name='mysite_login'),
-    url(r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'},
-        name='mysite_logout'),
+    url(r'^login/$', auth_views.login, {'template_name': 'login.html'},
+        name='login'),
+    url(r'^logout/$', auth_views.logout, {'template_name': 'logout.html'},
+        name='logout'),
 ]

@@ -17,7 +17,7 @@ import logging
 import configparser
 from django_auth_ldap.config import LDAPSearch, LDAPSearch
 
-LOGIN_URL = 'mysite_login'
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -86,9 +86,9 @@ WSGI_APPLICATION = 'hiwi_stunden.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hiwi-stunden',
-        'USER': 'root',
-        'PASSWORD': '',
+        'NAME': 'hiwi_portal',
+        'USER': 'hiwi_portal',
+        'PASSWORD': 'hiwi_portal',
         'HOST': 'localhost',
     }
 }

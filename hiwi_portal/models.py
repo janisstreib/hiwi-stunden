@@ -12,6 +12,9 @@ from django.core.exceptions import ValidationError
 
 #
 class User(models.Model):
+    is_anonymous = False
+    is_authenticated = True
+
     firstname = models.CharField(max_length=200)
     lastname = models.CharField(max_length=200)
     kitaccount = models.CharField(max_length=32, unique=True)  # funfact: old MS legacy :)
@@ -33,9 +36,6 @@ class User(models.Model):
 
     def get_username(self):
         return self.kitaccount
-
-    def is_authenticated(self):
-        return True
 
     def set_password(self, pw):
         pass

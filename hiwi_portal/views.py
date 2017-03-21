@@ -240,7 +240,7 @@ def printView(request, contract, month, year):
     templR = templR.replace("{!my}", month + "/" + year)
     rows = ""
     for t in workL.worktime_set.all().order_by("begin"):
-        rows += "%s & %s & %s & %s & %s & %.2f\\\\ \hline\n" % (t.activity,
+        rows += "%s & %s & %s & %s & %s & %.2f\\\\ \hline\n" % (t.activity.replace('&','\&'),
                                                                 t.begin.strftime("%d.%m.%y"),
                                                                 t.begin.strftime("%H:%M"),
                                                                 t.end.strftime("%H:%M"),

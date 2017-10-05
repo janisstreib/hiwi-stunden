@@ -141,6 +141,7 @@ def index(request):
         workSum = workL.calcHours()
         c.cw = workL
         c.cSum = workSum
+        c.percent = (workSum/c.hours)*100.0
         c.partVac = int(round(workL.contract.vacation / 12.0))
         if c.hours * 1.5 - workSum <= c.hours * 1.5 - c.hours:
             c.critSum = True

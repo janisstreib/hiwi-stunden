@@ -77,7 +77,7 @@ function accountDelete() {
 <h2 id="wd">Magic WorkDust</h2>
 {% for c in user.contract_set.all %}
 <div class="panel panel-default">
-  <div class="panel-heading">WorkDust settings for <b>{{c.department}}</b></div>
+	<div class="panel-heading">WorkDust settings for <b>{{c.department}}</b> ({{c.contract_begin}} - {{c.contract_end}})</div>
   <div class="panel-body">
     <p>Add and manage your templates for automatic filling.</p>
   </div>

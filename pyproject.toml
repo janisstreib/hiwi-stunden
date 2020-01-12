@@ -2,7 +2,7 @@
 name = "hiwi-stunden"
 version = "0.1.0"
 description = ""
-authors = ["NotAFile <notafile@gmail.com>"]
+authors = ["NotAFile <notafile@gmail.com>", "Janis Streib <me@janis-streib.de>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"

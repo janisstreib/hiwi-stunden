@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from models import Contract, WorkLog, WorkTime, FillerWorkDustActivity, FixedWorkDustActivity
+from .models import Contract, WorkLog, WorkTime, FillerWorkDustActivity, FixedWorkDustActivity
 from datetime import datetime, timedelta
 from calendar import monthrange
 from django.core.exceptions import ObjectDoesNotExist
@@ -57,7 +57,7 @@ def getMilogPath():
     try:
         FORM = config.get("formgen", "milog_path")
         return FORM
-    except configparser.NoOptionError as e:
+    except configparser.NoSectionError as e:
         print ("Missing configuartion! ", e)
         exit(1)
 
@@ -232,7 +232,7 @@ def printView(request, contract, month, year):
     out = tempfile.mkdtemp()
     templ = open(getMilogPath() + "/milog_form_placehold.tex", "r")
     templEnd = open(out + '/h.tex', "w+")
-    templR = templ.read().decode("utf-8")
+    templR = templ.read()
     templ.close()
     templR = templR.replace("{!name}", tex.escape(user.lastname) + ", " + tex.escape(user.firstname))
     templR = templR.replace("{!personell_number}", str(contract.personell_number))
@@ -259,13 +259,13 @@ def printView(request, contract, month, year):
     templR = templR.replace("{!overwork}", str(workL.calc_over_work()))
     templR = templR.replace("{!vacation}", str(int(round(workL.contract.vacation / 12.0))))
     overNext = workL.calcHours() - contract.hours
-    templR = templR.replace("{!overworknext}", str(float(overNext)))
-    templEnd.write(templR.encode("utf-8"))
+    templR = templR.replace("{!overworknext}", str(overNext))
+    templEnd.write(templR)
     templEnd.close()
     p = Popen(['pdflatex', '-output-directory=' + out, out + '/h.tex', '-interaction nonstopmode', '-halt-on-error',
                '-file-line-error'], cwd=getMilogPath())
     p.wait()
-    f = open(out + '/h.pdf', 'r')
+    f = open(out + '/h.pdf', 'rb')
     response.write(f.read())
     f.close()
     shutil.rmtree(out)

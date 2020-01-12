@@ -50,7 +50,7 @@ class Department(models.Model):
 
 
 class Supervisor(User):
-    department = models.ForeignKey(Department)
+    department = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
 
 
 class Contract(models.Model):
@@ -58,7 +58,7 @@ class Contract(models.Model):
         ('GF', 'Großforschungsbereich'),
         ('UB', 'Universitätsbereich'),
     )
-    user = models.ForeignKey(Hiwi)
+    user = models.ForeignKey(Hiwi, on_delete=models.CASCADE)
     department = models.CharField(max_length=200)
     hours = models.PositiveIntegerField(validators=[MaxValueValidator(85)])
     payment = models.DecimalField(max_digits=6, decimal_places=2)
@@ -74,7 +74,7 @@ class Contract(models.Model):
 
 
 class WorkLog(models.Model):
-    contract = models.ForeignKey(Contract)
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
     printed = models.BooleanField(default=False)
     carer_signed = models.BooleanField(default=False)
     month = models.IntegerField()
@@ -124,7 +124,7 @@ class WorkLog(models.Model):
 
 
 class WorkTime(models.Model):
-    work_log = models.ForeignKey(WorkLog)
+    work_log = models.ForeignKey(WorkLog, on_delete=models.CASCADE)
     pause = models.PositiveIntegerField(default=0)
     begin = models.DateTimeField('Start')
     end = models.DateTimeField('Ende')
@@ -193,7 +193,7 @@ class WorkTime(models.Model):
 
 
 class FixedWorkDustActivity(models.Model):
-    contract = models.ForeignKey(Contract)
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     avg_length = models.FloatField(validators=[MinValueValidator(0.1)])
     start = models.TimeField('Start')
@@ -201,6 +201,6 @@ class FixedWorkDustActivity(models.Model):
 
 
 class FillerWorkDustActivity(models.Model):
-    contract = models.ForeignKey(Contract)
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     avg_length = models.FloatField(validators=[MinValueValidator(0)])

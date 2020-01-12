@@ -41,21 +41,23 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # "debug_toolbar",
     'hiwi_portal',
     'django_auth_ldap',
     'mathfilters'
 )
 
-MIDDLEWARE_CLASSES = (
+
+MIDDLEWARE = [
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-)
+]
 
 ROOT_URLCONF = 'hiwi_stunden.urls'
 AUTHENTICATION_BACKENDS = (
@@ -134,3 +136,9 @@ AUTH_LDAP_USER_ATTR_MAP = {"firstname": "givenName", "lastname": "sn", "email": 
 logger = logging.getLogger('django_auth_ldap')
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
+
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+    '::1',
+]

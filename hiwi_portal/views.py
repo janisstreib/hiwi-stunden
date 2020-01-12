@@ -216,6 +216,12 @@ def contractAdd(request):
     return render(request, 'contract_add.html', context)
 
 
+def tex_escape(tex):
+    tex = tex.replace('&', '\&')
+    tex = tex.replace('\\', '\\textbackslash')
+    tex = tex.replace('~', '\\textasciitilde')
+    return tex
+
 @login_required
 def printView(request, contract, month, year):
     user = request.user
@@ -228,7 +234,7 @@ def printView(request, contract, month, year):
     templEnd = open(out + '/h.tex', "w+")
     templR = templ.read().decode("utf-8")
     templ.close()
-    templR = templR.replace("{!name}", user.lastname + ", " + user.firstname)
+    templR = templR.replace("{!name}", tex.escape(user.lastname) + ", " + tex.escape(user.firstname))
     templR = templR.replace("{!personell_number}", str(contract.personell_number))
     if (contract.personell == "UB"):
         templR = templR.replace("{!gf}", "")
@@ -241,7 +247,7 @@ def printView(request, contract, month, year):
     templR = templR.replace("{!my}", month + "/" + year)
     rows = ""
     for t in workL.worktime_set.all().order_by("begin"):
-        rows += "%s & %s & %s & %s & %s & %.2f\\\\ \hline\n" % (t.activity.replace('&','\&'),
+        rows += "%s & %s & %s & %s & %s & %.2f\\\\ \hline\n" % (tex_escape(t.activity),
                                                                 t.begin.strftime("%d.%m.%y"),
                                                                 t.begin.strftime("%H:%M"),
                                                                 t.end.strftime("%H:%M"),

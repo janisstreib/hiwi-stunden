@@ -217,10 +217,7 @@ def contractAdd(request):
 
 
 def tex_escape(tex):
-    tex = tex.replace('&', '\&')
-    tex = tex.replace('\\', '\\textbackslash')
-    tex = tex.replace('~', '\\textasciitilde')
-    return tex
+    return tex.maketrans({"&": r"\&", "%": r"\%", "$": r"\$", "#": r"\#", "_": r"\_", "{": r"\{", "}": r"\}", "~": r"\textasciitilde", "^": r"\textasciicircum", "\\": r"\textbackslash"})
 
 @login_required
 def printView(request, contract, month, year):

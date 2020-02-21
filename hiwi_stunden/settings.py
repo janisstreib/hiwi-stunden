@@ -31,7 +31,7 @@ SECRET_KEY = '0nc$y#t0hoi80rlvp&!#(#7w%0mp*l(cooc(ck@a!@kq+k+llb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'w4h.scc.kit.edu']
 
 # Application definition
 
@@ -88,9 +88,9 @@ WSGI_APPLICATION = 'hiwi_stunden.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hiwi_portal',
-        'USER': 'hiwi_portal',
-        'PASSWORD': 'hiwi_portal',
+        'NAME': 'hiwi-portal',
+        'USER': 'hiwi-portal',
+        'PASSWORD': '',
         'HOST': 'localhost',
     }
 }
@@ -115,9 +115,9 @@ STATICFILES_DIRS = (
 )
 STATIC_URL = '/static/'
 
-AUTH_LDAP_BIND_DN = ""
-AUTH_LDAP_BIND_PASSWORD = ""
-AUTH_LDAP_SERVER_URI = ""
+AUTH_LDAP_BIND_DN = "foo"
+AUTH_LDAP_BIND_PASSWORD = "foo"
+AUTH_LDAP_SERVER_URI = "ldaps://foo:636"
 config = configparser.ConfigParser()
 config.read("config.ini")
 try:
